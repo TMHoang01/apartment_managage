@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "247505605589",
+    "firebase_url": "https://splendid-parsec-364609-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "splendid-parsec-364609",
+    "storage_bucket": "splendid-parsec-364609.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247505605589:android:42e4555b82abde736ea35c",
+        "android_client_info": {
+          "package_name": "com.example.apartment_managage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247505605589-kr4b8hdbk9tk1ek7cq5e9odhqrcmgakd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC55gDYnR65uiMlM3ZbaI1L5x3OEAMdau4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247505605589-hbagt5d6ae8ms2h9q9h9jb5ljqjh99cf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "247505605589-5pbhjdlc3epjnchco4l27lgmnb5la59o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mangageApartment"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247505605589:android:efaa1c72a54f247b6ea35c",
+        "android_client_info": {
+          "package_name": "com.example.mangage_apartment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247505605589-lb3imjlfq268udnss90fttq091ak98kk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mangage_apartment",
+            "certificate_hash": "d714a3338cbbc02f5593ebea95448462a7d3b035"
+          }
+        },
+        {
+          "client_id": "247505605589-kr4b8hdbk9tk1ek7cq5e9odhqrcmgakd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC55gDYnR65uiMlM3ZbaI1L5x3OEAMdau4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247505605589-hbagt5d6ae8ms2h9q9h9jb5ljqjh99cf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "247505605589-5pbhjdlc3epjnchco4l27lgmnb5la59o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mangageApartment"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247505605589:android:18ab17ec2137dda76ea35c",
+        "android_client_info": {
+          "package_name": "com.example.apartment_managage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247505605589-23a5t3nrpoii01ppk67pu21s6p5q64g4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.apartment_managage",
+            "certificate_hash": "d714a3338cbbc02f5593ebea95448462a7d3b035"
+          }
+        },
+        {
+          "client_id": "247505605589-kr4b8hdbk9tk1ek7cq5e9odhqrcmgakd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC55gDYnR65uiMlM3ZbaI1L5x3OEAMdau4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247505605589-hbagt5d6ae8ms2h9q9h9jb5ljqjh99cf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "247505605589-5pbhjdlc3epjnchco4l27lgmnb5la59o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mangageApartment"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
