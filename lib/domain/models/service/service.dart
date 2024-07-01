@@ -104,7 +104,7 @@ class ServiceModel extends Equatable {
           ? List<PriceListItem>.from(
               json['priceList'].map((x) => PriceListItem.fromJson(x)))
           : [],
-      rating: json['rating'].toDouble() ?? 0.0,
+      rating: json['rating']?.toDouble() ?? 0.0,
       ratingCount: json['ratingCount'] != null
           ? _parseRatingCount(Map<String, dynamic>.from(json['ratingCount']))
           : null,

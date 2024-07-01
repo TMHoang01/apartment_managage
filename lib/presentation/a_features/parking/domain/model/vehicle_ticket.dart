@@ -39,6 +39,7 @@ class VehicleTicket extends Equatable {
   final DateTime? expireDate;
   final TicketStatus? status;
 
+  final bool? isInParking;
   final String? parkingLotId;
   final String? parkingLotName;
 
@@ -57,6 +58,7 @@ class VehicleTicket extends Equatable {
     this.registerDate,
     this.expireDate,
     this.status,
+    this.isInParking,
     this.parkingLotId,
     this.parkingLotName,
     this.createdAt,
@@ -85,6 +87,7 @@ class VehicleTicket extends Equatable {
         registerDate,
         expireDate,
         status,
+        isInParking,
         parkingLotId,
         parkingLotName,
         createdAt,
@@ -113,6 +116,7 @@ class VehicleTicket extends Equatable {
       registerDate: TextFormat.parseJson(json['registerDate']),
       expireDate: TextFormat.parseJson(json['expireDate']),
       status: statusEnum,
+      isInParking: json['isInParking'],
       parkingLotId: json['parkingLotId'],
       parkingLotName: json['parkingLotName'],
       createdAt: TextFormat.parseJson(json['createdAt']),
@@ -140,6 +144,7 @@ class VehicleTicket extends Equatable {
       if (registerDate != null) 'registerDate': registerDate,
       if (expireDate != null) 'expireDate': expireDate,
       if (status != null) 'status': status?.toJson(),
+      if (isInParking != null) 'isInParking': isInParking,
       if (parkingLotId != null) 'parkingLotId': parkingLotId,
       if (parkingLotName != null) 'parkingLotName': parkingLotName,
       if (createdAt != null) 'createdAt': createdAt,
@@ -159,6 +164,7 @@ class VehicleTicket extends Equatable {
       DateTime? registerDate,
       DateTime? expireDate,
       TicketStatus? status,
+      bool? isInParking,
       String? parkingLotId,
       String? parkingLotName,
       DateTime? createdAt,
@@ -175,6 +181,7 @@ class VehicleTicket extends Equatable {
       registerDate: registerDate ?? this.registerDate,
       expireDate: expireDate ?? this.expireDate,
       status: status ?? this.status,
+      isInParking: isInParking ?? this.isInParking,
       parkingLotId: parkingLotId ?? this.parkingLotId,
       parkingLotName: parkingLotName ?? this.parkingLotName,
       createdAt: createdAt ?? this.createdAt,

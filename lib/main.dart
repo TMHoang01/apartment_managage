@@ -1,23 +1,20 @@
-import 'package:apartment_managage/bloc_observer.dart';
-import 'package:apartment_managage/data/datasources/auth_remote.dart';
-import 'package:apartment_managage/data/datasources/ecom/category_repository.dart';
-import 'package:apartment_managage/domain/repository/ecom/order_repository.dart';
-import 'package:apartment_managage/domain/repository/ecom/product_repository.dart';
-import 'package:apartment_managage/domain/repository/file_repository.dart';
 import 'package:apartment_managage/domain/repository/service/service_repository.dart';
-import 'package:apartment_managage/domain/repository/user_repository.dart';
 import 'package:apartment_managage/firebase_options.dart';
-import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
-import 'package:apartment_managage/presentation/blocs/admins/employee_form/employee_form_bloc.dart';
-import 'package:apartment_managage/presentation/blocs/admins/employees/employees_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_backs/feed_backs_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/blocs/guest_access/guest_access_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/parking_checkin/parking_checkin_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/posts/posts_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/products/product_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/service_booking/service_booking_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/services/services_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/employee_form/employee_form_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/employees/employees_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/user_detail/user_detail_bloc.dart';
 import 'package:apartment_managage/presentation/blocs/admins/users/users_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/users_approve/users_bloc.dart';
 import 'package:apartment_managage/presentation/blocs/auth/auth/auth_bloc.dart';
 import 'package:apartment_managage/router.dart';
 import 'package:apartment_managage/sl.dart';
@@ -30,7 +27,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = SimpleBlocDelegate();
+  // Bloc.observer = SimpleBlocDelegate();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupLocator();
 
@@ -72,8 +69,9 @@ class MyApp extends StatelessWidget {
                   ),
                   BlocProvider(
                       create: (_) => sl.get<PostsBloc>()..add(PostsStarted())),
-                  BlocProvider(
-                      create: (_) => sl<UsersBloc>()..add(UsersGetAllUsers())),
+                  BlocProvider(create: (_) => sl<UsersBloc>()),
+                  BlocProvider(create: (_) => sl<UsersApproveBloc>()),
+                  BlocProvider(create: (_) => sl<UserDetailBloc>()),
                   BlocProvider(
                       create: (_) =>
                           sl<ServicesBloc>()..add(ServicesStarted())),
@@ -84,9 +82,13 @@ class MyApp extends StatelessWidget {
                   BlocProvider(create: (_) => sl<EmployeesBloc>()),
                   BlocProvider(create: (_) => sl<ServiceBookingBloc>()),
 
-                  // pảking
+                  // parking
                   BlocProvider(create: (_) => sl<ManageVehicleTicketBloc>()),
                   BlocProvider(create: (_) => sl<ParkingBloc>()),
+                  BlocProvider(create: (_) => sl<ParkingCheckInBloc>()),
+
+                  // guest access
+                  BlocProvider(create: (_) => sl<GuestAccessBloc>()),
                 ],
                 child: MyMaterialApp(
                   initialRoute: AppRouter.dashboard,
@@ -121,7 +123,7 @@ class MyMaterialApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Quản lý chung cư',
+      title: 'Quản lý tiện ích chung cư',
       locale: const Locale('vi', 'VN'),
       theme: ThemeData(
         useMaterial3: true,

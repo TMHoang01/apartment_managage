@@ -1,3 +1,5 @@
+import 'package:apartment_managage/data/datasources/feed_back/feed_back_local.dart';
+import 'package:apartment_managage/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apartment_managage/domain/models/feed_back/feed_back.dart';
@@ -16,6 +18,7 @@ class FeedBackListScreen extends StatefulWidget {
 class _FeedBackListScreenState extends State<FeedBackListScreen> {
   final scrollController = ScrollController();
   final Map<String, String?> filter = {};
+  late FeedbackLocalDataSource local = FeedbackLocalDataSource();
 
   @override
   void initState() {
@@ -100,6 +103,27 @@ class _FeedBackListScreenState extends State<FeedBackListScreen> {
                       content: '$index - ${feedBacks[index].content}');
 
                   return ItemFeedBack(feedBack);
+                },
+              ),
+              CustomButton(
+                title: 'clear',
+                onPressed: () {
+                  local.clear();
+                },
+              ),
+              CustomButton(
+                title: 'add',
+                onPressed: () {
+                  local.addFeedbacks(feedBacks
+                      .sublist(feedBacks.length > 16 ? 16 : feedBacks.length));
+                  // local.clear();
+                },
+              ),
+              CustomButton(
+                title: 'get',
+                onPressed: () {
+                  print('get');
+                  local.getFeedback();
                 },
               ),
             ],

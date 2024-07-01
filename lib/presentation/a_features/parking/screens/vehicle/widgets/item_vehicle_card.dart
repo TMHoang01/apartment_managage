@@ -14,7 +14,7 @@ class ItemVehicleCard extends StatelessWidget {
             : Colors.red;
     final Size size = MediaQuery.of(context).size;
     return Card(
-      child: ExpansionTile(
+      child: ListTile(
         leading: CircleAvatar(
             child: Icon(item.vehicleType == 'car'
                 ? Icons.directions_car

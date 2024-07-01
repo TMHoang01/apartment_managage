@@ -1,3 +1,4 @@
+import 'package:apartment_managage/presentation/blocs/admins/users_approve/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apartment_managage/main.dart';
@@ -28,7 +29,7 @@ class AdminApp extends StatelessWidget {
           create: (context) => sl<CategoryBloc>()..add(GetCategoriesEvent()),
         ),
         BlocProvider(create: (context) => sl<PostsBloc>()..add(PostsStarted())),
-        BlocProvider(create: (_) => sl<UsersBloc>()..add(UsersGetAllUsers())),
+        BlocProvider(create: (_) => sl<UsersBloc>()),
         BlocProvider(create: (_) => sl<ServicesBloc>()..add(ServicesStarted())),
         BlocProvider(
             create: (_) => sl<FeedBacksBloc>()..add(FeedBacksStarted())),

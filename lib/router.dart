@@ -5,22 +5,20 @@ import 'package:apartment_managage/domain/models/post/post.dart';
 import 'package:apartment_managage/domain/models/service/booking_service.dart';
 import 'package:apartment_managage/domain/models/service/service.dart';
 import 'package:apartment_managage/domain/models/user_model.dart';
-import 'package:apartment_managage/presentation/a_features/parking/screens/paking/parking_manage_screen.dart';
+import 'package:apartment_managage/presentation/a_features/feed_back/screens/feed_back_detail_screen.dart';
+import 'package:apartment_managage/presentation/a_features/feed_back/screens/feed_back_list_screen.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_detail_screen.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_form_screen.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_list_creen.dart';
+import 'package:apartment_managage/presentation/a_features/parking/screens/paking/parking_inout_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/paking/parking_map_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/form_resgiter_vehicle_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/list_register_vehicle_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/list_vehicle_ticket_screen.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
-import 'package:apartment_managage/presentation/screens/admins/dashboard/dash_board.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_list_screen.dart';
-import 'package:apartment_managage/presentation/screens/admins/employee/employee_create_account_screen.dart';
-import 'package:apartment_managage/presentation/screens/admins/employee/employee_detail_screen.dart';
-import 'package:apartment_managage/presentation/screens/admins/employee/employee_list_screen.dart';
-import 'package:apartment_managage/presentation/screens/admins/employee/employee_select_screen.dart';
-import 'package:apartment_managage/presentation/a_features/feed_back/screens/feed_back_detail_screen.dart';
-import 'package:apartment_managage/presentation/a_features/feed_back/screens/feed_back_list_screen.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_create_screen.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_detail_screen.dart';
+import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_list_screen.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/products/form/product_detail_form.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/products/product_detail.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/products/products_screen.dart';
@@ -29,6 +27,12 @@ import 'package:apartment_managage/presentation/a_features/service/screens/servi
 import 'package:apartment_managage/presentation/a_features/service/screens/services/service_details_screen.dart';
 import 'package:apartment_managage/presentation/a_features/service/screens/services/service_form_screen.dart';
 import 'package:apartment_managage/presentation/a_features/service/screens/services/service_screen.dart';
+import 'package:apartment_managage/presentation/screens/admins/dashboard/dash_board.dart';
+import 'package:apartment_managage/presentation/screens/admins/employee/employee_create_account_screen.dart';
+import 'package:apartment_managage/presentation/screens/admins/employee/employee_detail_screen.dart';
+import 'package:apartment_managage/presentation/screens/admins/employee/employee_list_screen.dart';
+import 'package:apartment_managage/presentation/screens/admins/employee/employee_select_screen.dart';
+import 'package:apartment_managage/presentation/screens/admins/users/user_accept_screen.dart';
 import 'package:apartment_managage/presentation/screens/admins/users/user_details_screen.dart';
 import 'package:apartment_managage/presentation/screens/admins/users/users_screen.dart';
 import 'package:apartment_managage/presentation/screens/signin/sign_in.dart';
@@ -56,6 +60,7 @@ class AppRouter {
   static const String oderDetail = '/admin/order';
 
   static const String users = '/admin/user/list';
+  static const String usersApprove = '/admin/user/approve/list';
   static const String userDetail = '/admin/user/detail';
   // services
   static const String services = '/admin/service';
@@ -86,6 +91,12 @@ class AppRouter {
       '/parking/vehicle-ticket/register';
   static const String parkingVehicleEdit = '/parking/vehicle-ticket/edit';
 
+  // guest access
+  static const String guestAccess = '/guest-access';
+  static const String guestAccessDetail = '/guest-access/detail';
+  static const String guestAccessEdit = '/guest-access/edit';
+  static const String guestAccessAdd = '/guest-access/add';
+
   // settings
   static const String settings = '/settings';
 
@@ -97,6 +108,7 @@ class AppRouter {
     productAdd: (context) => const ProductFormDetail(),
     post: (context) => const PostListScreen(),
     users: (context) => const UsersScreen(),
+    usersApprove: (context) => const UsersApproveScreen(),
     services: (context) => const ServicesScreen(),
     bookings: (context) => const ServiceBookingListScreen(),
     feedback: (context) => const FeedBackListScreen(),
@@ -109,6 +121,11 @@ class AppRouter {
         const ListVehicleTikectRegisterScreen(),
     parkingVehicleEdit: (context) => const FormResgitterVehicleScreen(),
     parking: (context) => const ParkingMapScreen(),
+
+    // guest access
+    guestAccess: (context) => const GuestAccessListScreen(),
+    guestAccessAdd: (context) => const GuestAccessFormScreen(),
+    guestAccessDetail: (context) => const GuestAccessDetailScreen(),
   };
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {

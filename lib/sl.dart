@@ -3,8 +3,10 @@ import 'package:apartment_managage/data/datasources/ecom/category_repository.dar
 import 'package:apartment_managage/data/datasources/ecom/order_remote.dart';
 import 'package:apartment_managage/data/datasources/ecom/post_remote.dart';
 import 'package:apartment_managage/data/datasources/ecom/product_repository.dart';
+import 'package:apartment_managage/data/datasources/feed_back/feed_back_local.dart';
 import 'package:apartment_managage/data/datasources/feed_back/feed_back_remote.dart';
 import 'package:apartment_managage/data/datasources/file_store.dart';
+import 'package:apartment_managage/data/datasources/guest_access/guest_access_remote.dart';
 import 'package:apartment_managage/data/datasources/manage/employee_remote.dart';
 import 'package:apartment_managage/data/datasources/service/booking_service_remote.dart';
 import 'package:apartment_managage/data/datasources/service/service_remote.dart';
@@ -13,6 +15,7 @@ import 'package:apartment_managage/data/repository/auth_repository.dart';
 import 'package:apartment_managage/data/repository/ecom/category_repository.dart';
 import 'package:apartment_managage/data/repository/ecom/order_repository.dart';
 import 'package:apartment_managage/data/repository/ecom/product_repository.dart';
+import 'package:apartment_managage/data/repository/guest_access/guest_access_repository.dart';
 import 'package:apartment_managage/data/repository/post/post_repository.dart';
 import 'package:apartment_managage/data/repository/user_repository.dart';
 import 'package:apartment_managage/domain/repository/auth_repository.dart';
@@ -21,30 +24,36 @@ import 'package:apartment_managage/domain/repository/ecom/order_repository.dart'
 import 'package:apartment_managage/domain/repository/ecom/product_repository.dart';
 import 'package:apartment_managage/domain/repository/feed_back/feed_back_repository.dart';
 import 'package:apartment_managage/domain/repository/file_repository.dart';
+import 'package:apartment_managage/domain/repository/guest_access/guest_access_repository.dart';
 import 'package:apartment_managage/domain/repository/manage/employee_repository.dart';
 import 'package:apartment_managage/domain/repository/post/post_repository.dart';
 import 'package:apartment_managage/domain/repository/service/booking_repository.dart';
 import 'package:apartment_managage/domain/repository/service/service_repository.dart';
 import 'package:apartment_managage/domain/repository/user_repository.dart';
-import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/parking/data/parking_remote.dart';
-import 'package:apartment_managage/presentation/a_features/parking/data/vehicle_remote.dart';
-import 'package:apartment_managage/presentation/a_features/parking/domain/repository/paking_lot_repository.dart';
-import 'package:apartment_managage/presentation/a_features/parking/domain/repository/vehicle_repository.dart';
-import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
-import 'package:apartment_managage/presentation/blocs/admins/employee_form/employee_form_bloc.dart';
-import 'package:apartment_managage/presentation/blocs/admins/employees/employees_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_back_detail/feed_back_detail_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_backs/feed_backs_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/blocs/guest_access/guest_access_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/parking_checkin/parking_checkin_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/parking/data/parking_remote.dart';
+import 'package:apartment_managage/presentation/a_features/parking/data/vehicle_remote.dart';
+import 'package:apartment_managage/presentation/a_features/parking/domain/repository/paking_checkin_repository.dart';
+import 'package:apartment_managage/presentation/a_features/parking/domain/repository/paking_lot_repository.dart';
+import 'package:apartment_managage/presentation/a_features/parking/domain/repository/vehicle_repository.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_detail/post_detail_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/posts/posts_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/products/product_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/service_booking/service_booking_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/service_form/service_form_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/services/services_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/employee_form/employee_form_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/employees/employees_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/user_detail/user_detail_bloc.dart';
 import 'package:apartment_managage/presentation/blocs/admins/users/users_bloc.dart';
+import 'package:apartment_managage/presentation/blocs/admins/users_approve/users_bloc.dart';
 import 'package:apartment_managage/presentation/blocs/auth/auth/auth_bloc.dart';
 import 'package:apartment_managage/presentation/blocs/auth/signin/signin_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -86,6 +95,8 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<UserRemote>(() => UserRemote());
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryIml(sl.call()));
   sl.registerFactory<UsersBloc>(() => UsersBloc(sl.call()));
+  sl.registerFactory<UsersApproveBloc>(() => UsersApproveBloc(sl.call()));
+  sl.registerFactory<UserDetailBloc>(() => UserDetailBloc(sl.call()));
 
   sl.registerLazySingleton<ServiceRemoteDataSource>(
       () => ServiceRemoteDataSourceImpl());
@@ -104,8 +115,10 @@ Future<void> setupLocator() async {
   // feed back
   sl.registerLazySingleton<FeedBackRemoteDataSource>(
       () => FeedBackRemoteDataSourceImpl());
+  sl.registerLazySingleton<FeedbackLocalDataSource>(
+      () => FeedbackLocalDataSource());
   sl.registerLazySingleton<FeedBackRepository>(
-      () => FeedBackRepositoryImpl(sl.call()));
+      () => FeedBackRepositoryImpl(sl.call(), sl.call()));
 
   _initAuth();
   _initAdmin();
@@ -156,6 +169,9 @@ void _initAuth() {
   sl.registerLazySingleton<ParkingLotRepository>(
     () => ParkingLotRepositoryImpl(sl.call()),
   );
+  sl.registerLazySingleton<ParkingCheckinRepository>(
+    () => ParkingCheckinRepositoryImpl(sl.call()),
+  );
   sl.registerLazySingleton<VehicleRemoteDataSource>(
     () => VehicleRemoteDataSourceImpl(),
   );
@@ -165,4 +181,15 @@ void _initAuth() {
   sl.registerFactory<ManageVehicleTicketBloc>(
       () => ManageVehicleTicketBloc(sl.call()));
   sl.registerFactory<ParkingBloc>(() => ParkingBloc(sl.call()));
+
+  sl.registerFactory<ParkingCheckInBloc>(
+      () => ParkingCheckInBloc(sl.call(), sl.call()));
+
+  // guest access
+  sl.registerLazySingleton<GuestAccessRemoteDataSource>(
+      () => GuestAccessRemoteDataSourceImpl());
+  sl.registerLazySingleton<GuestAccessRepository>(
+      () => GuestAccessRepositoryImpl(sl.call()));
+
+  sl.registerFactory<GuestAccessBloc>(() => GuestAccessBloc(sl.call()));
 }

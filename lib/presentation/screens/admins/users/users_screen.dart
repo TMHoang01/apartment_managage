@@ -19,7 +19,7 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<UsersBloc>().add(UsersGetAllUsers());
+
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -28,12 +28,21 @@ class _UsersScreenState extends State<UsersScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Lấy arguments trong didChangeDependencies
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+    print(args);
+    context.read<UsersBloc>().add(UsersGetAllUsers(args ?? 'resident'));
+  }
+
   void _loadMore() {
     context.read<UsersBloc>().add(UsersLoadMore());
   }
 
   void _refresh() {
-    context.read<UsersBloc>().add(UsersGetAllUsers());
+    context.read<UsersBloc>().add(UsersGetAllUsers('resident'));
   }
 
   @override
@@ -51,7 +60,7 @@ class _UsersScreenState extends State<UsersScreen> {
           }
           if (state is UsersLoaded && state.users.isEmpty) {
             return const Center(
-              child: Text('Không có người dùng cần duyệt'),
+              child: Text('Danh sách trống'),
             );
           }
           if (state is UsersError) {

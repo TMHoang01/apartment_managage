@@ -112,6 +112,10 @@ class AuthFirebase {
       if (user == null && uid != null) {
         return null;
       }
+      if (user?.roles != Role.admin && user?.roles != Role.employee) {
+        _firebaseAuth.signOut();
+        throw Exception('Bạn không có quyền truy cập.');
+      }
       logger.i('user: $user');
       return user;
     } catch (e) {

@@ -50,7 +50,8 @@ class _ListVehicleTikectRegisterScreenState
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.list.length,

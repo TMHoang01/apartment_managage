@@ -1,7 +1,8 @@
-import 'package:apartment_managage/presentation/screens/admins/router_admin.dart';
+import 'package:apartment_managage/domain/models/user_model.dart';
 import 'package:apartment_managage/presentation/widgets/custom_image_view.dart';
 import 'package:apartment_managage/router.dart';
 import 'package:apartment_managage/utils/constants.dart';
+import 'package:apartment_managage/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -37,7 +38,7 @@ class _AdminHomePageState extends State<AdminHomePage>
       icon: FontAwesomeIcons.userCheck,
       color: Colors.yellow,
       onTap: (BuildContext context) {
-        navService.pushNamed(context, AppRouter.users);
+        navService.pushNamed(context, AppRouter.usersApprove);
       },
     ),
     ItemHomePage(
@@ -53,7 +54,8 @@ class _AdminHomePageState extends State<AdminHomePage>
       icon: FontAwesomeIcons.buildingUser,
       color: Colors.green,
       onTap: (BuildContext context) {
-        navService.pushNamed(context, AppRouter.users);
+        navService.pushNamed(context, AppRouter.users,
+            args: Role.resident.toJson());
       },
     ),
     ItemHomePage(
@@ -61,7 +63,8 @@ class _AdminHomePageState extends State<AdminHomePage>
       icon: FontAwesomeIcons.userGear,
       color: Colors.red,
       onTap: (BuildContext context) {
-        navService.pushNamed(context, AppRouter.users);
+        navService.pushNamed(context, AppRouter.users,
+            args: Role.provider.toJson());
       },
     ),
   ];
@@ -80,7 +83,7 @@ class _AdminHomePageState extends State<AdminHomePage>
       icon: FontAwesomeIcons.addressCard,
       color: Colors.green,
       onTap: (BuildContext context) {
-        navService.pushNamed(context, AppRouter.products);
+        navService.pushNamed(context, AppRouter.guestAccess);
       },
     ),
     // ItemHomePage(
@@ -100,7 +103,7 @@ class _AdminHomePageState extends State<AdminHomePage>
       },
     ),
     ItemHomePage(
-      title: 'Đăng ký vào ra xe',
+      title: 'Xe vào ra',
       icon: FontAwesomeIcons.carOn,
       color: Colors.green,
       onTap: (BuildContext context) {
@@ -116,7 +119,7 @@ class _AdminHomePageState extends State<AdminHomePage>
       },
     ),
     ItemHomePage(
-      title: 'Vé Xe cư dân',
+      title: 'Danh sách vé xe tháng',
       icon: FontAwesomeIcons.moneyBillTransfer,
       color: Colors.green,
       onTap: (BuildContext context) {
@@ -206,17 +209,26 @@ class _AdminHomePageState extends State<AdminHomePage>
                 boxFit: BoxFit.fitWidth,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             // List type user
-            Text('  Quản lý người dùng', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
-            _buildGridView(listTypeUser),
-            Text('  Dịch vụ tiện ích', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
+            if (userCurrent?.isAdmin ?? false)
+              Column(
+                children: [
+                  Text('  Quản lý người dùng',
+                      style:
+                          theme.textTheme.titleMedium?.copyWith(fontSize: 18)),
+                  const SizedBox(height: 6),
+                  _buildGridView(listTypeUser),
+                ],
+              ),
+            Text('  Dịch vụ tiện ích',
+                style: theme.textTheme.titleMedium?.copyWith(fontSize: 18)),
+            const SizedBox(height: 6),
             _buildGridView(listinternalServices.sublist(0, 2)),
             _buildGridView(listinternalServices.sublist(3)),
-            Text('  Bài đăng, sản phẩm', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
+            Text('  Bài đăng, sản phẩm',
+                style: theme.textTheme.titleMedium?.copyWith(fontSize: 18)),
+            const SizedBox(height: 6),
             _buildGridView(listPost),
           ],
         ),

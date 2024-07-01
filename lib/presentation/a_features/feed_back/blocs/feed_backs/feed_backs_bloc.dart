@@ -66,7 +66,7 @@ class FeedBacksBloc extends Bloc<FeedBacksEvent, FeedBacksState> {
             lastCreateAt: lastCreateAt, limit: LIMIT_PAGE, filter: filter);
 
         list.addAll(feedBacksNew);
-        if (feedBacksNew.isEmpty || feedBacksNew.length < LIMIT_PAGE) {
+        if (feedBacksNew.isEmpty) {
           emit(FeedBacksLoadMoreEnd(feedBacks: list, filter: filter));
           return;
         } else {

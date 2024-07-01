@@ -15,15 +15,14 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<UsersGetAllUsers>(_getAllUsers);
     on<UsersAcceptUser>(_acceptUser);
     on<UsersSwitchLockAccount>(_switchLockAccount);
-    on<UsersLoadMore>(_loadMore);
     on<UsersGetListNotInClude>(_getListNotInClude);
   }
 
   void _getAllUsers(UsersGetAllUsers event, Emitter<UsersState> emit) async {
     try {
       emit(UsersLoading());
-      final users = await _userRepository.getUserPending();
-      emit(UsersLoaded(users));
+      final user = await _userRepository.getListUsers(event.type ?? 'resident');
+      emit(UsersLoaded(user));
     } catch (e) {
       emit(UsersError(e.toString()));
     }
@@ -50,22 +49,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   void _switchLockAccount(
       UsersSwitchLockAccount event, Emitter<UsersState> emit) async {}
 
-  void _loadMore(UsersLoadMore event, Emitter<UsersState> emit) async {
-    try {
-      if (state is UsersLoaded) {
-        final users = (state as UsersLoaded).users;
-        final query = UsersQuery(
-          page: users.length ~/ 20 + 1,
-          pageSize: 20,
-        );
-        final newUsers = await _userRepository.getUsersQuery(query);
-        emit(UsersLoaded([...users, ...newUsers]));
-      }
-    } catch (e) {
-      emit(UsersError(e.toString()));
-    }
-  }
-
   void _getListNotInClude(
       UsersGetListNotInClude event, Emitter<UsersState> emit) async {
     try {
@@ -76,23 +59,4 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       emit(UsersError(e.toString()));
     }
   }
-}
-
-class UsersQuery {
-  final String? search;
-  final int? page;
-  final int? pageSize;
-  final String? lastId;
-  final String? sort;
-  final String? order;
-  final String? status;
-
-  UsersQuery(
-      {this.search,
-      this.page = 1,
-      this.pageSize = 20,
-      this.lastId,
-      this.sort,
-      this.order = 'desc',
-      this.status});
 }

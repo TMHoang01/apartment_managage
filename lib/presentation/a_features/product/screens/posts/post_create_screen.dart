@@ -69,7 +69,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     Widget child = Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Tạo bài đăng ${typePost}'),
+        title: const Text('Tạo bài đăng'),
       ),
       body: BlocProvider.value(
         value: widget._postFormBloc,

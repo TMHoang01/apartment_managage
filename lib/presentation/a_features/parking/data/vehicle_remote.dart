@@ -5,7 +5,7 @@ import 'package:apartment_managage/presentation/a_features/parking/domain/model/
 abstract class VehicleRemoteDataSource {
   Future<List<VehicleTicket>> getManageVehicles(String userId);
 
-  Future<VehicleTicket> getVehicle(String id);
+  Future<VehicleTicket?> getVehicleByCode(String code);
 
   Future<VehicleTicket> comfirmRegisterVehicle(VehicleTicket vehicle);
 
@@ -19,7 +19,7 @@ abstract class VehicleRemoteDataSource {
 }
 
 class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
-  final storage = FirebaseFirestore.instance;
+  final firestore = FirebaseFirestore.instance;
   final String vehicleCollection = 'vehicles';
 
   @override
@@ -32,8 +32,9 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
       }
 
       // Check if code is exist
-      final querySnapshot = await storage
+      final querySnapshot = await firestore
           .collection(vehicleCollection)
+          .where(FieldPath.documentId, isNotEqualTo: vehicle.id)
           .where('ticketCode', isEqualTo: code)
           .get();
 
@@ -41,7 +42,8 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
         throw 'Mã thẻ đã tồn tại';
       }
 
-      final vehicleRef = storage.collection(vehicleCollection).doc(vehicle.id);
+      final vehicleRef =
+          firestore.collection(vehicleCollection).doc(vehicle.id);
       await vehicleRef.update({
         'status': vehicle.status?.toJson(),
         'updatedAt': DateTime.now(),
@@ -66,10 +68,9 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
   @override
   Future<List<VehicleTicket>> getManageVehicles(String userId) async {
     try {
-      final querySnapshot = await storage
+      final querySnapshot = await firestore
           .collection(vehicleCollection)
-          .where('status', isEqualTo: 'active')
-          .get();
+          .where('status', whereIn: ['active', 'expired']).get();
       return querySnapshot.docs
           .map((e) => VehicleTicket.fromDocumentSnapshot(e))
           .toList();
@@ -79,9 +80,25 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
   }
 
   @override
-  Future<VehicleTicket> getVehicle(String id) {
-    // TODO: implement getVehicle
-    throw UnimplementedError();
+  Future<VehicleTicket?> getVehicleByCode(String id) async {
+    try {
+      final vehicleRef = firestore
+          .collection(vehicleCollection)
+          .where('ticketCode', isEqualTo: id)
+          // .where('status', isEqualTo: 'active')
+          .where('expireDate', isGreaterThan: DateTime.now())
+          .limit(1);
+      // check if vehicle is exist
+      final querySnapshot = await vehicleRef.get();
+      if (querySnapshot.docs.isEmpty) {
+        return null;
+      }
+      final vehicleSnapshot = querySnapshot.docs.first;
+      return VehicleTicket.fromDocumentSnapshot(vehicleSnapshot);
+    } catch (e) {
+      logger.e(e);
+      throw e;
+    }
   }
 
   @override
@@ -92,7 +109,7 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
 
   @override
   Future<List<VehicleTicket>> getTicketNeedApprovel() async {
-    final querySnapshot = await storage
+    final querySnapshot = await firestore
         .collection(vehicleCollection)
         .where('status', isEqualTo: 'pending')
         .get();
@@ -104,7 +121,7 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
   @override
   Future<VehicleTicket> updateVehicleStatus(String id, String status) async {
     try {
-      final vehicleRef = storage.collection(vehicleCollection).doc(id);
+      final vehicleRef = firestore.collection(vehicleCollection).doc(id);
       if (status == 'active') {
         await vehicleRef.update({
           'status': status,

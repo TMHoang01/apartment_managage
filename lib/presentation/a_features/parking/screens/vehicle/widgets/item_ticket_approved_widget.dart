@@ -26,14 +26,14 @@ class ItemTicketRegisterdWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: kPrimaryColor.withOpacity(0.3),
-          ),
+          // border: Border.all(
+          //   color: kPrimaryColor.withOpacity(0.3),
+          // ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 8,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -48,13 +48,44 @@ class ItemTicketRegisterdWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              ticket.vehicleLicensePlate ?? '',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              children: [
+                const Text(
+                  'Biển số: ',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  ticket.vehicleLicensePlate ?? '',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: 4),
+            if (ticket.ticketCode != null)
+              Row(
+                children: [
+                  const Text(
+                    'Biển số: ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    ticket.vehicleLicensePlate ?? '',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             const SizedBox(height: 12),
             Row(
               children: [

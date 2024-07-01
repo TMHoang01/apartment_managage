@@ -10,7 +10,7 @@ class UserRepositoryIml implements UserRepository {
 
   @override
   Future<UserModel> getUserById(String id) async {
-    return _userRemote.getUser(id);
+    return _userRemote.getUserById(id);
   }
 
   @override
@@ -24,12 +24,12 @@ class UserRepositoryIml implements UserRepository {
   }
 
   @override
-  Future<List<UserModel>> getUsersQuery(UsersQuery query) async {
-    return _userRemote.getUsersQuery(query);
+  Future<List<UserModel>> getListNotInClude(List<String> ids) async {
+    return _userRemote.getListNotInIds(ids);
   }
 
   @override
-  Future<List<UserModel>> getListNotInClude(List<String> ids) async {
-    return _userRemote.getListNotInIds(ids);
+  Future<List<UserModel>> getListUsers(String? type) async {
+    return _userRemote.getListUsers(type);
   }
 }

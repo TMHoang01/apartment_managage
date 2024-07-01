@@ -10,6 +10,21 @@ enum Role {
 
   String toJson() => name;
   static Role fromJson(String json) => values.byName(json);
+
+  String toName() {
+    switch (this) {
+      case Role.admin:
+        return 'Quản trị viên';
+      case Role.employee:
+        return 'Nhân viên';
+      case Role.user:
+        return 'User';
+      case Role.provider:
+        return 'Nhà cung cấp';
+      case Role.resident:
+        return 'Cư dân';
+    }
+  }
 }
 
 enum StatusUser {
@@ -53,6 +68,7 @@ class UserModel {
     this.status,
   });
   String get uid => id ?? '';
+  bool get isAdmin => roles == Role.admin;
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],

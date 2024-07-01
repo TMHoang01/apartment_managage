@@ -6,7 +6,7 @@ import 'package:apartment_managage/utils/firebase.dart';
 class UserRemote {
   UserRemote();
 
-  Future<UserModel> getUser(String userId) async {
+  Future<UserModel> getUserById(String userId) async {
     try {
       final user = await usersRef.doc(userId).get();
       return UserModel.fromDocumentSnapshot(user);
@@ -49,50 +49,21 @@ class UserRemote {
     }
   }
 
-  Future<List<UserModel>> getUsersQuery(UsersQuery query) async {
+  Future<List<UserModel>> getListNotInIds(List<String> ids) async {
     try {
-      final db = FirebaseFirestore.instance;
-      Query queryRef =
-          db.collection('users'); // Replace 'users' with your collection name
-
-      // Apply search filter
-      if (query.search != null) {
-        queryRef = queryRef
-            .where('name', isGreaterThanOrEqualTo: query.search)
-            .where('name',
-                isLessThanOrEqualTo: query
-                    .search); // Search by name starting with the query string
-      }
-
-      // Apply status filter
-      if (query.status != null) {
-        queryRef = queryRef.where('status', isEqualTo: query.status);
-      }
-
-      // Apply sorting
-      if (query.sort != null) {
-        queryRef = queryRef.orderBy(query.sort as Object,
-            descending: query.order == 'desc');
-      }
-
-      // Apply pagination
-      if (query.page != null && query.pageSize != null) {
-        queryRef = queryRef.limit(query.pageSize!).startAfter([query.lastId]);
-      }
-
-      final snapshot = await queryRef.get();
-      final users = snapshot.docs
-          .map((doc) => UserModel.fromDocumentSnapshot(doc))
-          .toList();
-      return users;
+      final users = await usersRef.where('id', whereNotIn: ids).get();
+      return users.docs.map((e) => UserModel.fromDocumentSnapshot(e)).toList();
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  Future<List<UserModel>> getListNotInIds(List<String> ids) async {
+  Future<List<UserModel>> getListUsers(String? type) async {
     try {
-      final users = await usersRef.where('id', whereNotIn: ids).get();
+      final users = await usersRef
+          .where('status', isNotEqualTo: 'pending')
+          .where('roles', isEqualTo: type)
+          .get();
       return users.docs.map((e) => UserModel.fromDocumentSnapshot(e)).toList();
     } catch (e) {
       throw Exception(e);

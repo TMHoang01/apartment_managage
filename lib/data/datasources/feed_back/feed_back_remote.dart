@@ -12,6 +12,8 @@ abstract class FeedBackRemoteDataSource {
 
   Future<List<FeedBackModel>> getAll(
       {DateTime? lastCreateAt,
+      DateTime? endCreateAt,
+      DateTime? lastUpdated,
       int limit = LIMIT_PAGE,
       Map<String, String>? filter});
 
@@ -48,6 +50,8 @@ class FeedBackRemoteDataSourceImpl implements FeedBackRemoteDataSource {
   @override
   Future<List<FeedBackModel>> getAll(
       {DateTime? lastCreateAt,
+      DateTime? endCreateAt,
+      DateTime? lastUpdated,
       int limit = 15,
       Map<String, String>? filter}) async {
     try {
@@ -55,6 +59,13 @@ class FeedBackRemoteDataSourceImpl implements FeedBackRemoteDataSource {
           db.collection('feedbacks').orderBy('createdAt', descending: true);
       if (lastCreateAt != null) {
         query = query.startAfter([lastCreateAt]);
+      }
+      if (endCreateAt != null) {
+        // query = query.endBefore([endCreateAt]);
+        query = query.where('createdAt', isGreaterThanOrEqualTo: endCreateAt);
+      }
+      if (lastUpdated != null) {
+        query = query.where('updatedAt', isGreaterThan: lastUpdated);
       }
 
       if (filter != null) {

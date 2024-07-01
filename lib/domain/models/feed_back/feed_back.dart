@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:apartment_managage/domain/models/manage/employee.dart';
@@ -138,6 +140,26 @@ class FeedBackModel extends Equatable {
       if (updatedAt != null) 'updatedAt': updatedAt,
       if (updatedBy != null) 'updatedBy': updatedBy,
     };
+  }
+
+  String jsEncode() {
+    return jsonEncode({
+      if (id != null) 'id': id,
+      if (userId != null) 'userId': userId,
+      if (userName != null) 'userName': userName,
+      if (type != null) 'type': type?.toJson(),
+      if (image != null) 'image': image,
+      if (content != null) 'content': content,
+      if (status != null) 'status': status?.toJson(),
+      if (listHandlers != null)
+        'listHandlers': listHandlers?.map((x) => x.toJsonInfor()).toList(),
+      if (rating != null) 'rating': rating,
+      if (review != null) 'review': review,
+      if (createdAt != null) 'createdAt': createdAt?.toIso8601String(),
+      if (createdBy != null) 'createdBy': createdBy,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toIso8601String(),
+      if (updatedBy != null) 'updatedBy': updatedBy,
+    });
   }
 
   FeedBackModel copyWith({
