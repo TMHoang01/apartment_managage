@@ -8,15 +8,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FeedbackLocalDataSource {
   FeedbackLocalDataSource();
   static const String _key = 'feedback_list';
-  static const String _timeBegin = 'feedback_timeBegin';
-  static const String _timeEnd = 'feedback_timeEnd';
+  static const String _keyTimeBegin = 'feedback_timeBegin';
+  static const String _keyTimeEnd = 'feedback_timeEnd';
+  List<FeedBackModel> _list = [];
+  DateTime _begin = new DateTime.now();
+  DateTime _end = new DateTime.now();
 
   static const int _maxSize = 100;
   Future<void> _settimeBegin(DateTime date) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       String strTime = date.toIso8601String();
-      prefs.setString(_timeBegin, strTime);
+      prefs.setString(_keyTimeBegin, strTime);
     } catch (e) {
       logger.e(e.toString());
       throw Exception(e.toString());
@@ -26,7 +29,7 @@ class FeedbackLocalDataSource {
   Future<void> _setTimeEnd(DateTime date) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_timeEnd, date.toIso8601String());
+      await prefs.setString(_keyTimeEnd, date.toIso8601String());
     } catch (e) {
       logger.e(e.toString());
       throw Exception(e.toString());
@@ -36,8 +39,10 @@ class FeedbackLocalDataSource {
   Future<DateTime?> getTimeBegin() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final data = prefs.getString(_timeBegin);
+      final data = prefs.getString(_keyTimeBegin);
+
       if (data == null) return null;
+      _begin = DateTime.parse(data);
       return DateTime.parse(data);
     } catch (e) {
       logger.e(e.toString());
@@ -45,11 +50,33 @@ class FeedbackLocalDataSource {
     }
   }
 
+  Future<DateTime?> getTimeEnd() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final data = prefs.getString(_keyTimeEnd);
+      if (data == null) return null;
+      _end = DateTime.parse(data);
+
+      return DateTime.parse(data);
+    } catch (e) {
+      logger.e(e.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> _updateLocal() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_keyTimeEnd, _keyTimeEnd);
+    prefs.setString(_keyTimeBegin, _keyTimeBegin);
+    final save = _list.map((e) => e.jsEncode()).toList();
+    prefs.setStringList(_key, save);
+  }
+
   Future<bool> checkTimeIn(DateTime time) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final begin = prefs.getString(_timeBegin);
-      final end = prefs.getString(_timeEnd);
+      final begin = prefs.getString(_keyTimeBegin);
+      final end = prefs.getString(_keyTimeEnd);
       if (begin == null && end == null) return false;
       // return begin timeEpoch && timeEpoch > end!;
 
@@ -65,6 +92,10 @@ class FeedbackLocalDataSource {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> addFirst(List<FeedBackModel> newList) async {}
+
+  Future<void> update(List<FeedBackModel> newList) async {}
 
   Future<void> addFeedbacks(List<FeedBackModel> feedback) async {
     try {
@@ -89,7 +120,7 @@ class FeedbackLocalDataSource {
       if (combinedData.length > _maxSize) {
         combinedData = combinedData.take(_maxSize).toList();
       }
-      logger.f('add ${feedback.length} -> ${combinedData.length}');
+      // logger.f('add ${feedback.length} -> ${combinedData.length}');
       FeedBackModel? fbBegin =
           combinedData.firstOrNull != null ? _decode(combinedData.first) : null;
       FeedBackModel? fbEnd =
@@ -112,8 +143,8 @@ class FeedbackLocalDataSource {
   Future<void> clear() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(_key);
-    prefs.remove(_timeBegin);
-    prefs.remove(_timeEnd);
+    prefs.remove(_keyTimeBegin);
+    prefs.remove(_keyTimeEnd);
   }
 
   // Future<void> removeFeedback(List<FeedBackModel> feedback) async {}

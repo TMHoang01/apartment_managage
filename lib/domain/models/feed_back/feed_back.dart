@@ -76,6 +76,7 @@ class FeedBackModel extends Equatable {
   final String? createdBy;
   final DateTime? updatedAt;
   final String? updatedBy;
+  final DateTime? beginPartion; // only local
 
   const FeedBackModel({
     this.id,
@@ -92,6 +93,7 @@ class FeedBackModel extends Equatable {
     this.createdBy,
     this.updatedAt,
     this.updatedBy,
+    this.beginPartion,
   });
 
   factory FeedBackModel.fromJson(Map<String, dynamic> json) {
@@ -159,6 +161,7 @@ class FeedBackModel extends Equatable {
       if (createdBy != null) 'createdBy': createdBy,
       if (updatedAt != null) 'updatedAt': updatedAt?.toIso8601String(),
       if (updatedBy != null) 'updatedBy': updatedBy,
+      if (beginPartion != null) 'beginPartion': beginPartion?.toIso8601String(),
     });
   }
 
@@ -177,6 +180,7 @@ class FeedBackModel extends Equatable {
     String? createdBy,
     DateTime? updatedAt,
     String? updatedBy,
+    DateTime? beginPartion,
   }) {
     return FeedBackModel(
       id: id ?? this.id,
@@ -193,6 +197,7 @@ class FeedBackModel extends Equatable {
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
       updatedBy: updatedBy ?? this.updatedBy,
+      beginPartion: beginPartion ?? this.beginPartion,
     );
   }
 
@@ -212,5 +217,6 @@ class FeedBackModel extends Equatable {
         createdBy,
         updatedAt,
         updatedBy,
+        beginPartion,
       ];
 }

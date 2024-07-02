@@ -35,12 +35,28 @@ class FeedBackRepositoryImpl implements FeedBackRepository {
     return remoteData.delete(id: id);
   }
 
+  late DateTime? _beginLocal;
+  late DateTime? _endLocal;
+
   @override
   Future<List<FeedBackModel>> getAll(
       {DateTime? lastCreateAt,
       int limit = 15,
       Map<String, String>? filter}) async {
-    if (lastCreateAt != null) {
+    if (lastCreateAt == null) {
+      _beginLocal = await localData.getTimeBegin();
+      _endLocal = await localData.getTimeEnd();
+      List<FeedBackModel> list = await remoteData.getAll(
+          lastCreateAt: lastCreateAt, limit: limit, filter: filter);
+      await localData.addFeedbacks(list);
+      DateTime? begin = list.first.createdAt;
+      list = list
+          .map((e) => e.copyWith(
+                beginPartion: begin,
+              ))
+          .toList();
+      return list;
+    } else {
       if (await localData.checkTimeIn(lastCreateAt)) {
         final list = await localData.getFeedback(
             timeIn: lastCreateAt, limit: limit, filter: filter);
@@ -49,8 +65,6 @@ class FeedBackRepositoryImpl implements FeedBackRepository {
         final endCreateAt =
             list.lastOrNull != null ? list.last.createdAt : null;
         final lastUpdated = getMaxUpdatedAt(list);
-
-        logger.t('local get data $lastCreateAt ${list.length}');
 
         final listUpdate = await remoteData.getAll(
           lastCreateAt: lastCreateAt,
@@ -67,11 +81,8 @@ class FeedBackRepositoryImpl implements FeedBackRepository {
       } else {
         logger.t('remote get data $lastCreateAt');
       }
-    } else {}
-    final list = await remoteData.getAll(
-        lastCreateAt: lastCreateAt, limit: limit, filter: filter);
-    await localData.addFeedbacks(list);
-    return list;
+    }
+    return [];
   }
 
   @override
