@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/products/form/cubit/product_detail_cubit.dart';
+import 'package:apartment_managage/presentation/a_features/product/screens/form/cubit/product_detail_cubit.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/products/product_bloc.dart';
 import 'package:apartment_managage/domain/models/ecom/category_model.dart';
 import 'package:apartment_managage/domain/models/ecom/product_model.dart';

@@ -52,7 +52,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
     return BlocConsumer<EmployeeFormBloc, EmployeeFormState>(
       listener: (context, state) {
         if (state is EmployeeFormInforSuccess) {
-          showSnackBarSuccess(context, 'Cập nhật thông tin thành công');
+          showSnackBarSuccess(context, 'Cập nhập thông tin thành công');
           // context.read<EmployeesBloc>().add(EmployeesEditLocal(state.employee));
         } else if (state is EmployeeFormError) {
           showSnackBarError(context, state.message);
@@ -184,7 +184,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                         );
                   }
                 },
-                title: 'Cập nhật',
+                title: 'Cập nhập',
               ),
               Sizebox,
             ],

@@ -52,8 +52,9 @@ class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
         imagePath: event.image,
       );
 
-      final postSuccess =
-          await _postRepository.add(post: post.copyWith(image: imageUrl));
+      final postSuccess = await _postRepository.add(
+        post: post.copyWith(image: imageUrl, status: 'active'),
+      );
       emit(PostFormCreateSuccess(post: postSuccess));
     } catch (e) {
       emit(PostFormFailure(

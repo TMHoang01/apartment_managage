@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apartment_managage/domain/models/post/post.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/posts/posts_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/widgets/post_card.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/widgets/post_card.dart';
 import 'package:apartment_managage/presentation/screens/admins/router_admin.dart';
 import 'package:apartment_managage/presentation/widgets/widgets.dart';
 import 'package:apartment_managage/router.dart';

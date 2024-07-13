@@ -1,4 +1,4 @@
-import 'package:apartment_managage/data/datasources/ecom/post_remote.dart';
+import 'package:apartment_managage/data/datasources/post/post_remote.dart';
 import 'package:apartment_managage/domain/models/post/joiners.dart';
 import 'package:apartment_managage/domain/models/post/post.dart';
 import 'package:apartment_managage/domain/repository/post/post_repository.dart';

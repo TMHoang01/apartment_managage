@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:apartment_managage/domain/models/post/post.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/widgets/post_bottom_sheet.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/widgets/post_bottom_sheet.dart';
 import 'package:apartment_managage/presentation/widgets/widgets.dart';
 import 'package:apartment_managage/utils/utils.dart';
 
@@ -41,8 +41,8 @@ class ContentNewsDetails extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      // fontWeight: FontWeight.bold,
                     ),
                   ),
                 )

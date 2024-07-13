@@ -1,3 +1,4 @@
+import 'package:apartment_managage/utils/utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -29,9 +30,10 @@ class FeedBacksBloc extends Bloc<FeedBacksEvent, FeedBacksState> {
     emit(FeedBacksLoading());
     try {
       list = [];
-      list = await feedBackRepository.getAll();
+      list = await feedBackRepository.getFeedback();
       emit(FeedBacksLoaded(feedBacks: list));
     } catch (e) {
+      logger.e(e.toString());
       emit(FeedBacksFailure(message: e.toString()));
     }
   }
@@ -44,9 +46,10 @@ class FeedBacksBloc extends Bloc<FeedBacksEvent, FeedBacksState> {
         filter = event.filter;
         list = [];
         emit(FeedBacksLoadingMore(oldPosts: list, filter: filter));
-        list = await feedBackRepository.getAll(filter: filter);
+        list = await feedBackRepository.getFeedback(filter: filter);
         emit(FeedBacksLoaded(feedBacks: list, filter: filter));
       } catch (e) {
+        logger.e(e.toString());
         emit(FeedBacksFailure(message: e.toString()));
       }
     }
@@ -62,8 +65,8 @@ class FeedBacksBloc extends Bloc<FeedBacksEvent, FeedBacksState> {
         emit(FeedBacksLoadingMore(oldPosts: list, filter: filter));
         // await Future.delayed(const Duration(seconds: 1));
 
-        final feedBacksNew = await feedBackRepository.getAll(
-            lastCreateAt: lastCreateAt, limit: LIMIT_PAGE, filter: filter);
+        final feedBacksNew = await feedBackRepository.getFeedback(
+            lastCreatedAt: lastCreateAt, limit: LIMIT_PAGE, filter: filter);
 
         list.addAll(feedBacksNew);
         if (feedBacksNew.isEmpty) {
@@ -73,6 +76,7 @@ class FeedBacksBloc extends Bloc<FeedBacksEvent, FeedBacksState> {
           emit(FeedBacksLoaded(feedBacks: list, filter: filter));
         }
       } catch (e) {
+        logger.e(e.toString());
         emit(FeedBacksLoadMoreFailure(oldPosts: list, message: e.toString()));
       }
     }

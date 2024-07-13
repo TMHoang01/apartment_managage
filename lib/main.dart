@@ -2,6 +2,7 @@ import 'package:apartment_managage/domain/repository/service/service_repository.
 import 'package:apartment_managage/firebase_options.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_backs/feed_backs_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/guest_access/blocs/guest_access/guest_access_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/blocs/select_resident/select_resident_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking_checkin/parking_checkin_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
@@ -89,6 +90,7 @@ class MyApp extends StatelessWidget {
 
                   // guest access
                   BlocProvider(create: (_) => sl<GuestAccessBloc>()),
+                  BlocProvider(create: (_) => sl<SelectResidentBloc>()),
                 ],
                 child: MyMaterialApp(
                   initialRoute: AppRouter.dashboard,

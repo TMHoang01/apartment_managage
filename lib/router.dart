@@ -10,18 +10,19 @@ import 'package:apartment_managage/presentation/a_features/feed_back/screens/fee
 import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_detail_screen.dart';
 import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_form_screen.dart';
 import 'package:apartment_managage/presentation/a_features/guest_access/screens/guest_access_list_creen.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/screens/select_resident_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/paking/parking_inout_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/paking/parking_map_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/form_resgiter_vehicle_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/list_register_vehicle_screen.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/list_vehicle_ticket_screen.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_create_screen.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_detail_screen.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/post_list_screen.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/products/form/product_detail_form.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/products/product_detail.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/products/products_screen.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/post_create_screen.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/post_detail_screen.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/post_list_screen.dart';
+import 'package:apartment_managage/presentation/a_features/product/screens/form/product_detail_form.dart';
+import 'package:apartment_managage/presentation/a_features/product/screens/product_detail.dart';
+import 'package:apartment_managage/presentation/a_features/product/screens/products_screen.dart';
 import 'package:apartment_managage/presentation/a_features/service/screens/service_booking/service_booking_detail_screen.dart';
 import 'package:apartment_managage/presentation/a_features/service/screens/service_booking/service_booking_list_screen.dart';
 import 'package:apartment_managage/presentation/a_features/service/screens/services/service_details_screen.dart';
@@ -96,6 +97,7 @@ class AppRouter {
   static const String guestAccessDetail = '/guest-access/detail';
   static const String guestAccessEdit = '/guest-access/edit';
   static const String guestAccessAdd = '/guest-access/add';
+  static const String guestAccessAddResident = '/guest-access/add/resident';
 
   // settings
   static const String settings = '/settings';
@@ -126,6 +128,7 @@ class AppRouter {
     guestAccess: (context) => const GuestAccessListScreen(),
     guestAccessAdd: (context) => const GuestAccessFormScreen(),
     guestAccessDetail: (context) => const GuestAccessDetailScreen(),
+    guestAccessAddResident: (context) => const GuestAccessSelectResident(),
   };
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {

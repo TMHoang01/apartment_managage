@@ -1,7 +1,7 @@
 import 'package:apartment_managage/data/datasources/auth_remote.dart';
 import 'package:apartment_managage/data/datasources/ecom/category_repository.dart';
 import 'package:apartment_managage/data/datasources/ecom/order_remote.dart';
-import 'package:apartment_managage/data/datasources/ecom/post_remote.dart';
+import 'package:apartment_managage/data/datasources/post/post_remote.dart';
 import 'package:apartment_managage/data/datasources/ecom/product_repository.dart';
 import 'package:apartment_managage/data/datasources/feed_back/feed_back_local.dart';
 import 'package:apartment_managage/data/datasources/feed_back/feed_back_remote.dart';
@@ -33,6 +33,7 @@ import 'package:apartment_managage/domain/repository/user_repository.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_back_detail/feed_back_detail_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/feed_back/blocs/feed_backs/feed_backs_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/guest_access/blocs/guest_access/guest_access_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/guest_access/blocs/select_resident/select_resident_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking_checkin/parking_checkin_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
@@ -192,4 +193,5 @@ void _initAuth() {
       () => GuestAccessRepositoryImpl(sl.call()));
 
   sl.registerFactory<GuestAccessBloc>(() => GuestAccessBloc(sl.call()));
+  sl.registerFactory<SelectResidentBloc>(() => SelectResidentBloc(sl.call()));
 }

@@ -14,6 +14,10 @@ abstract class FeedBackRepository {
       {DateTime? lastCreateAt,
       int limit = LIMIT_PAGE,
       Map<String, String>? filter});
+  Future<List<FeedBackModel>> getFeedback(
+      {DateTime? lastCreatedAt,
+      int limit = LIMIT_PAGE,
+      Map<String, String>? filter});
 
   // load more
 

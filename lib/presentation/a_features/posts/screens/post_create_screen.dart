@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apartment_managage/domain/models/post/post.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/widgets/form_event_create.dart';
-import 'package:apartment_managage/presentation/a_features/product/screens/posts/widgets/form_news_create.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/widgets/form_event_create.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/widgets/form_news_create.dart';
 import 'package:apartment_managage/presentation/widgets/widgets.dart';
 import 'package:apartment_managage/router.dart';
 
@@ -85,7 +85,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                   showSnackBar(context, state.error, Colors.red);
                 } else if (state is PostFormEditSuccess) {
                   showSnackBar(
-                      context, 'Cập nhật bài đăng thành công', Colors.green);
+                      context, 'Cập nhập bài đăng thành công', Colors.green);
                 } else if (state is PostEditFailure) {
                   showSnackBar(context, state.error, Colors.red);
                 }

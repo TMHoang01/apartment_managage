@@ -105,27 +105,27 @@ class _FeedBackListScreenState extends State<FeedBackListScreen> {
                   return ItemFeedBack(feedBack);
                 },
               ),
-              CustomButton(
-                title: 'clear',
-                onPressed: () {
-                  local.clear();
-                },
-              ),
-              CustomButton(
-                title: 'add',
-                onPressed: () {
-                  local.addFeedbacks(feedBacks
-                      .sublist(feedBacks.length > 16 ? 16 : feedBacks.length));
-                  // local.clear();
-                },
-              ),
-              CustomButton(
-                title: 'get',
-                onPressed: () {
-                  print('get');
-                  local.getFeedback();
-                },
-              ),
+              // CustomButton(
+              //   title: 'clear',
+              //   onPressed: () {
+              //     local.clear();
+              //   },
+              // ),
+              // CustomButton(
+              //   title: 'add',
+              //   onPressed: () {
+              //     local.addFeedbacks(feedBacks
+              //         .sublist(feedBacks.length > 16 ? 16 : feedBacks.length));
+              //     // local.clear();
+              //   },
+              // ),
+              // CustomButton(
+              //   title: 'get',
+              //   onPressed: () {
+              //     print('get');
+              //     local.getFeedback();
+              //   },
+              // ),
             ],
           ),
         ),
@@ -152,6 +152,27 @@ class _FeedBackListScreenState extends State<FeedBackListScreen> {
                   }
                 },
               ),
+              // CustomButton(
+              //   title: 'clear',
+              //   onPressed: () {
+              //     local.clear();
+              //   },
+              // ),
+              // CustomButton(
+              //   title: 'add',
+              //   onPressed: () {
+              //     local.addFeedbacks(oldPosts
+              //         .sublist(oldPosts.length > 16 ? 16 : oldPosts.length));
+              //     // local.clear();
+              //   },
+              // ),
+              // CustomButton(
+              //   title: 'get',
+              //   onPressed: () {
+              //     print('get');
+              //     local.getFeedback();
+              //   },
+              // ),
             ],
           ),
         ),
@@ -185,7 +206,7 @@ class _FeedBackListScreenState extends State<FeedBackListScreen> {
                   );
             } else {
               context.read<FeedBacksBloc>().add(
-                    FeedBacksFilter(),
+                    const FeedBacksFilter(),
                   );
             }
           },
@@ -210,16 +231,14 @@ class _FeedBackListScreenState extends State<FeedBackListScreen> {
           children: [
             _item(null, state.filter == null),
             gap,
-            ...FeedBackStatus.values
-                .map(
-                  (e) => Row(
-                    children: [
-                      _item(e, state.filter?['status'] == e.toJson()),
-                      gap,
-                    ],
-                  ),
-                )
-                .toList(),
+            ...FeedBackStatus.values.map(
+              (e) => Row(
+                children: [
+                  _item(e, state.filter?['status'] == e.toJson()),
+                  gap,
+                ],
+              ),
+            ),
           ],
         ),
       ),

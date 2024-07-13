@@ -76,7 +76,7 @@ class FeedBackModel extends Equatable {
   final String? createdBy;
   final DateTime? updatedAt;
   final String? updatedBy;
-  final DateTime? beginPartion; // only local
+  final DateTime? partion; // only local
 
   const FeedBackModel({
     this.id,
@@ -93,7 +93,7 @@ class FeedBackModel extends Equatable {
     this.createdBy,
     this.updatedAt,
     this.updatedBy,
-    this.beginPartion,
+    this.partion,
   });
 
   factory FeedBackModel.fromJson(Map<String, dynamic> json) {
@@ -115,6 +115,7 @@ class FeedBackModel extends Equatable {
       createdBy: json['createdBy'],
       updatedAt: TextFormat.parseJson(json['updatedAt']),
       updatedBy: json['updatedBy'],
+      partion: TextFormat.parseJson(json['partion']),
     );
   }
 
@@ -161,8 +162,23 @@ class FeedBackModel extends Equatable {
       if (createdBy != null) 'createdBy': createdBy,
       if (updatedAt != null) 'updatedAt': updatedAt?.toIso8601String(),
       if (updatedBy != null) 'updatedBy': updatedBy,
-      if (beginPartion != null) 'beginPartion': beginPartion?.toIso8601String(),
+      if (partion != null) 'partion': partion?.toIso8601String(),
     });
+  }
+
+  factory FeedBackModel.decode(String string) {
+    final json = jsonDecode(string);
+    DateTime createdAt = DateTime.parse(
+        json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch);
+    DateTime updatedAt = DateTime.parse(
+        json['updatedAt'] ?? DateTime.now().millisecondsSinceEpoch);
+    DateTime partion = DateTime.parse(
+        json['partion'] ?? DateTime.now().millisecondsSinceEpoch);
+    json['createdAt'] = createdAt;
+    json['updatedAt'] = updatedAt;
+    json['partion'] = partion;
+
+    return FeedBackModel.fromJson(json);
   }
 
   FeedBackModel copyWith({
@@ -180,7 +196,7 @@ class FeedBackModel extends Equatable {
     String? createdBy,
     DateTime? updatedAt,
     String? updatedBy,
-    DateTime? beginPartion,
+    DateTime? partion,
   }) {
     return FeedBackModel(
       id: id ?? this.id,
@@ -197,7 +213,7 @@ class FeedBackModel extends Equatable {
       createdBy: createdBy ?? this.createdBy,
       updatedAt: updatedAt ?? this.updatedAt,
       updatedBy: updatedBy ?? this.updatedBy,
-      beginPartion: beginPartion ?? this.beginPartion,
+      partion: partion ?? this.partion,
     );
   }
 
@@ -217,6 +233,6 @@ class FeedBackModel extends Equatable {
         createdBy,
         updatedAt,
         updatedBy,
-        beginPartion,
+        partion,
       ];
 }
