@@ -207,53 +207,58 @@ class _PostListScreenState extends State<PostListScreen>
           width: size.width,
           height: size.height,
           color: kOfWhite,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //  //sreach bar
-                // CustomTextFormField(
-                //   margin: const EdgeInsets.all(10),
-                //   hintText: 'Tìm kiếm',
-                //   suffix: const Icon(Icons.search),
-                // ),
-                // // status filter
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Padding(
-                //     padding: const EdgeInsets.all(8.0),
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.start,
-                //       children: [
-                //         ChipCard(
-                //           label: 'Tất cả',
-                //           backgroundColor: kPrimaryColor,
-                //           onTap: () {
-                //             context.read<PostsBloc>().add(PostsStarted());
-                //           },
-                //         ),
-                //         const ChipCard(
-                //           label: 'Chờ xác nhận',
-                //         ),
-                //         const ChipCard(
-                //           label: 'Đã xác nhận',
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+          child: RefreshIndicator(
+            onRefresh: () => Future.delayed(const Duration(seconds: 1), () {
+              context.read<PostsBloc>().add(const PostsStarted());
+            }),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //  //sreach bar
+                  // CustomTextFormField(
+                  //   margin: const EdgeInsets.all(10),
+                  //   hintText: 'Tìm kiếm',
+                  //   suffix: const Icon(Icons.search),
+                  // ),
+                  // // status filter
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.start,
+                  //       children: [
+                  //         ChipCard(
+                  //           label: 'Tất cả',
+                  //           backgroundColor: kPrimaryColor,
+                  //           onTap: () {
+                  //             context.read<PostsBloc>().add(PostsStarted());
+                  //           },
+                  //         ),
+                  //         const ChipCard(
+                  //           label: 'Chờ xác nhận',
+                  //         ),
+                  //         const ChipCard(
+                  //           label: 'Đã xác nhận',
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
 
-                const SizedBox(height: 10),
-                ...pendingPosts,
-                // PostCardWidget(
-                //   post: PostModel(
-                //     title: 'title',
-                //     content: 'content',
-                //     image: 'https://picsum.photos/200/300',
-                //   ),
-                // ),
-                _buildListPost(),
-              ],
+                  const SizedBox(height: 10),
+                  ...pendingPosts,
+                  // PostCardWidget(
+                  //   post: PostModel(
+                  //     title: 'title',
+                  //     content: 'content',
+                  //     image: 'https://picsum.photos/200/300',
+                  //   ),
+                  // ),
+                  _buildListPost(),
+                ],
+              ),
             ),
           ),
         ),

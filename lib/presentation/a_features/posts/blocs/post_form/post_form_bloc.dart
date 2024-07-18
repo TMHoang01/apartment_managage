@@ -69,6 +69,7 @@ class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
     final post = (event.post.copyWith(
       updatedAt: DateTime.now(),
       updatedBy: userCurrent!.uid,
+      status: 'active',
     ));
     try {
       emit(

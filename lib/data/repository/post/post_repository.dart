@@ -49,4 +49,13 @@ class PostRepositoryImpl implements PostRepository {
       {required String id, required JoinersModel joiner}) async {
     return await _postDataSource.joinEvent(id: id, joiner: joiner);
   }
+
+  @override
+  Future<List<PostModel>> getPendingPosts(
+      {DateTime? lastCreateAt,
+      int limit = LIMIT_PAGE,
+      Map<String, String>? filter}) async {
+    return await _postDataSource.getPendingPosts(
+        lastCreateAt: lastCreateAt, limit: limit, filter: filter);
+  }
 }

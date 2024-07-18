@@ -112,6 +112,15 @@ class PostModel extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [id, type, title, content, image, createdAt, createdBy, updatedAt];
+  List<Object?> get props => [
+        id,
+        type,
+        title,
+        content,
+        image,
+        createdAt,
+        createdBy,
+        updatedAt,
+        status
+      ];
 }

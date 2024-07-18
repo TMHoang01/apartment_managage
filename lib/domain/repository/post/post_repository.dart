@@ -16,6 +16,9 @@ abstract class PostRepository {
       String? query,
       String? type,
       DateTime? lastUpdate});
-
+  Future<List<PostModel>> getPendingPosts(
+      {DateTime? lastCreateAt,
+      int limit = LIMIT_PAGE,
+      Map<String, String>? filter});
   Future<void> joinEvent({required String id, required JoinersModel joiner});
 }

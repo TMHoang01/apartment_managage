@@ -3,6 +3,7 @@ import 'package:apartment_managage/presentation/a_features/parking/domain/model/
 
 abstract class VehicleRepository {
   Future<List<VehicleTicket>> getTicketActive(String userId);
+  Future<List<VehicleTicket>> getVehicleInParking();
   Future<List<VehicleTicket>> getTicketNeedApprovel();
   Future<VehicleTicket?> getVehicleByCode(String id);
   Future<VehicleTicket> comfirmRegisterVehicle(VehicleTicket vehicle);
@@ -23,6 +24,11 @@ class VehicleRepositoryImpl implements VehicleRepository {
   @override
   Future<List<VehicleTicket>> getTicketNeedApprovel() async {
     return vehicleRemoteDataSource.getTicketNeedApprovel();
+  }
+
+  @override
+  Future<List<VehicleTicket>> getVehicleInParking() async {
+    return vehicleRemoteDataSource.getVehicleInParking();
   }
 
   @override

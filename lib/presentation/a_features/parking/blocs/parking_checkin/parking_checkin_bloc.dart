@@ -11,7 +11,7 @@ part 'parking_checkin_state.dart';
 
 class ParkingCheckInBloc
     extends Bloc<ParkingCheckInEvent, ParkingCheckInState> {
-  final ParkingCheckinRepository parkingHistoryRepository;
+  final ParkingHistoryRepository parkingHistoryRepository;
   final VehicleRepository vehicleRepository;
   ParkingCheckInBloc(this.parkingHistoryRepository, this.vehicleRepository)
       : super(const ParkingCheckInState()) {
@@ -37,15 +37,14 @@ class ParkingCheckInBloc
   Future<void> _onParkingCheckInCheckInStarted(
       ParkingCheckInCheckInStarted event,
       Emitter<ParkingCheckInState> emit) async {
-    ParkingCheckIn history = event.parkingHistory;
+    ParkingHistory history = event.parkingHistory;
     emit(state.copyWith(
         select: history, statusIn: ParkingCheckInStatus.loading));
     try {
-      String? ticketCode = event.parkingHistory.ticketCode;
+      String? ticketCode = history.ticketCode;
       if (ticketCode != null) {
-        final VehicleTicket? ticket =
+        VehicleTicket? ticket =
             await vehicleRepository.getVehicleByCode(ticketCode);
-        logger.d('ticket: $ticket');
         if (ticket != null && ticket.isInParking == true) {
           emit(state.copyWith(
               ticket: ticket,
@@ -60,26 +59,35 @@ class ParkingCheckInBloc
               statusIn: ParkingCheckInStatus.error));
           return;
         }
-        bool isInParking =
-            await parkingHistoryRepository.isVehicleInParking(ticketCode);
-        if (isInParking) {
-          emit(
-            state.copyWith(
-                message: 'Thẻ xe đã gửi xe, vui lòng kiểm tra lại',
-                statusIn: ParkingCheckInStatus.error),
-          );
-          return;
-        }
+        // bool isInParking =
+        //     await parkingHistoryRepository.isVehicleInParking(ticketCode);
+        // if (isInParking) {
+        //   emit(
+        //     state.copyWith(
+        //         message: 'Thẻ xe đã gửi xe, vui lòng kiểm tra lại',
+        //         statusIn: ParkingCheckInStatus.error),
+        //   );
+        //   return;
+        // }
 
         if (history.isLicensePlateEmpty) {
           history = history.copyWith(
               vehicleLicensePlate: ticket?.vehicleLicensePlate ?? '');
         }
         final result = await parkingHistoryRepository.checkIn(history);
+
+        ticket ??= VehicleTicket(
+            ticketCode: ticketCode,
+            vehicleLicensePlate: history.vehicleLicensePlate,
+            isInParking: true);
         // add in index 0
         final list = state.list;
         list.insert(0, result);
-        emit(state.copyWith(statusIn: ParkingCheckInStatus.loaded, list: list));
+        emit(state.copyWith(
+          statusIn: ParkingCheckInStatus.loaded,
+          list: list,
+          ticket: ticket,
+        ));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -90,27 +98,37 @@ class ParkingCheckInBloc
   Future<void> _onParkingCheckInCheckOutStarted(
       ParkingCheckInCheckOutStarted event,
       Emitter<ParkingCheckInState> emit) async {
-    ParkingCheckIn history = event.parkingHistory.copyWith(
-      timeOut: DateTime.now(),
-    )..setPrice();
-    emit(state.copyWith(
-        select: history, statusOut: ParkingCheckInStatus.loading));
-    // try {
-    //   final result = await parkingHistoryRepository.checkOut(history);
-    //   emit(
-    //     state.copyWith(
-    //         statusOut: ParkingCheckInStatus.loaded,
-    //         list: state.list.map((e) {
-    //           if (e.id == result.id) {
-    //             return result;
-    //           }
-    //           return e;
-    //         }).toList()),
-    //   );
-    // } catch (e) {
-    //   emit(state.copyWith(
-    //       message: e.toString(), statusOut: ParkingCheckInStatus.error));
-    // }
+    try {
+      ParkingHistory history = event.parkingHistory.copyWith(
+        timeOut: DateTime.now(),
+      );
+      final VehicleTicket? ticket =
+          await vehicleRepository.getVehicleByCode(history.ticketCode!);
+      if (ticket?.isExpired == true) {
+        history = history.copyWith(
+          isMonthlyTicket: false,
+        );
+      }
+
+      history.setPrice();
+
+      emit(state.copyWith(
+          select: history, statusOut: ParkingCheckInStatus.loading));
+      final result = await parkingHistoryRepository.checkOut(history);
+      emit(
+        state.copyWith(
+            statusOut: ParkingCheckInStatus.loaded,
+            list: state.list.map((e) {
+              if (e.id == result.id) {
+                return result;
+              }
+              return e;
+            }).toList()),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          message: e.toString(), statusOut: ParkingCheckInStatus.error));
+    }
   }
 
   Future<void> _onParkingCheckInSearchInParking(

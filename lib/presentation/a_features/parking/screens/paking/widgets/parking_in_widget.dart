@@ -97,7 +97,7 @@ class _ParkingInWidgetState extends State<ParkingInWidget> {
                 isDisable: isLoading,
                 onPressed: () {
                   if (_form.currentState!.validate()) {
-                    final history = ParkingCheckIn(
+                    final history = ParkingHistory(
                       vehicleLicensePlate: _licensePlateController.text,
                       ticketCode: _ticketCodeController.text,
                       imgIn: _imageController.text,

@@ -16,6 +16,8 @@ abstract class VehicleRemoteDataSource {
   Future<List<VehicleTicket>> getTicketNeedApprovel();
 
   Future<VehicleTicket> updateVehicleStatus(String id, String status);
+
+  Future<List<VehicleTicket>> getVehicleInParking();
 }
 
 class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
@@ -141,5 +143,16 @@ class VehicleRemoteDataSourceImpl implements VehicleRemoteDataSource {
       logger.e(e);
       throw e;
     }
+  }
+
+  @override
+  Future<List<VehicleTicket>> getVehicleInParking() async {
+    final querySnapshot = await firestore
+        .collection(vehicleCollection)
+        .where('isInParking', isEqualTo: true)
+        .get();
+    return querySnapshot.docs
+        .map((e) => VehicleTicket.fromDocumentSnapshot(e))
+        .toList();
   }
 }

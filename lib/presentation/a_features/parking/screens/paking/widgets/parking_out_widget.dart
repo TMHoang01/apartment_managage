@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking_checkin/parking_checkin_bloc.dart';
 import 'package:apartment_managage/presentation/widgets/widgets.dart';
+import 'package:apartment_managage/utils/utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -89,9 +90,11 @@ class _ParkingOutWidgetState extends State<ParkingOutWidget> {
                       state.statusOut == ParkingCheckInStatus.loading &&
                           state.select == parkingHistory;
                   bool visibool = parkingHistory.timeOut == null;
+                  String type =
+                      parkingHistory.isMonthlyTicket == true ? "tháng" : '';
                   return ListTile(
                     title: Text('BSX: ${parkingHistory.vehicleLicensePlate} '),
-                    subtitle: Text('Mã thẻ: ${parkingHistory.ticketCode}  '),
+                    subtitle: Text('MT $type: ${parkingHistory.ticketCode}  '),
                     trailing: SizedBox(
                       width: 120,
                       child: Visibility(
@@ -108,7 +111,13 @@ class _ParkingOutWidgetState extends State<ParkingOutWidget> {
                                 },
                                 title: 'Ra ',
                               )
-                            : Text('Đã ra ${parkingHistory.price}'),
+                            : Text(
+                                'Đã ra: ${TextFormat.formatMoney(parkingHistory.price)} ',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green,
+                                ),
+                              ),
                       ),
                     ),
                   );

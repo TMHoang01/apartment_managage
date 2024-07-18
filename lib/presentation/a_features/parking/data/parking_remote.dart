@@ -9,14 +9,16 @@ abstract class ParkingRemoteDataSource {
 
   Future<ParkingLot> updateParkingLot(ParkingLot parkingLot);
 
-  Future<ParkingCheckIn> checkIn(ParkingCheckIn history);
-  Future<ParkingCheckIn> checkOut(ParkingCheckIn parkingLot);
-  Future<List<ParkingCheckIn>> getParkingCheckInInDate(DateTime date);
-  Future<List<ParkingCheckIn>> getParkingVehicleBySearch(String q);
-  Future<List<ParkingCheckIn>> getParkingCheckInByTicketId(String ticketId);
-  Future<List<ParkingCheckIn>> getParkingInParkingLot();
+  Future<ParkingHistory> checkIn(ParkingHistory history);
+  Future<ParkingHistory> checkOut(ParkingHistory parkingLot);
+  Future<List<ParkingHistory>> getParkingCheckInInDate(DateTime date);
+  Future<List<ParkingHistory>> getParkingVehicleBySearch(String q);
+  Future<List<ParkingHistory>> getParkingCheckInByTicketId(String ticketId);
+  Future<List<ParkingHistory>> getParkingInParkingLot();
 
   Future<bool> isVehicleInParking(String ticketCode);
+
+  Future<void> inParking(ParkingLot lot, VehicleTicket ticket);
 }
 
 class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
@@ -47,7 +49,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
   }
 
   @override
-  Future<ParkingCheckIn> checkIn(ParkingCheckIn history) async {
+  Future<ParkingHistory> checkIn(ParkingHistory history) async {
     try {
       history = await firestore.runTransaction((transaction) async {
         bool isMonthlyTicket = false;
@@ -66,7 +68,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
             VehicleTicket vehicleTicket =
                 VehicleTicket.fromDocumentSnapshot(vehicleDoc);
 
-            isMonthlyTicket = true;
+            isMonthlyTicket = vehicleTicket.isExpired ? false : true;
             if (vehicleTicket.isInParking != null &&
                 vehicleTicket.isInParking == true) {
               throw Exception('Thẻ xe đang được sử dụng gửi xe');
@@ -76,12 +78,23 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
               'isInParking': true,
             });
           }
+        } else {
+          final newVehicleTicket = VehicleTicket(
+            ticketCode: history.ticketCode,
+            registerDate: DateTime.now(),
+            isInParking: true,
+            vehicleLicensePlate: history.vehicleLicensePlate,
+          );
+
+          final newVehicleDocRef = firestore.collection(vehiclesTicket).doc();
+          transaction.set(newVehicleDocRef, newVehicleTicket.toJson());
+          isMonthlyTicket = false;
         }
 
         final querySnapshot = await firestore
             .collection(parkingHistory)
             .where('timeOut', isNull: true)
-            .where('ticketCode', isEqualTo: true)
+            .where('ticketCode', isEqualTo: history.ticketCode)
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
@@ -89,16 +102,13 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
         }
 
         final doc = firestore.collection(parkingHistory).doc();
-        transaction.set(doc, {
-          'vehicleLicensePlate': history.vehicleLicensePlate,
-          'ticketCode': history.ticketCode,
-          'timeIn': FieldValue.serverTimestamp(),
-          'imgIn': history.imgIn,
-          'timeOut': history.timeOut,
-          'isMonthlyTicket': isMonthlyTicket,
-        });
+        final newDoc = history.copyWith(
+          isMonthlyTicket: isMonthlyTicket,
+          timeIn: DateTime.now(),
+        );
+        transaction.set(doc, newDoc.toJson());
 
-        return history.copyWith(id: doc.id, timeIn: DateTime.now());
+        return newDoc.copyWith(id: doc.id);
       }).catchError((e) {
         logger.e(e);
         throw e;
@@ -112,7 +122,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
   }
 
   @override
-  Future<ParkingCheckIn> checkOut(ParkingCheckIn parkingCheckIn) async {
+  Future<ParkingHistory> checkOut(ParkingHistory parkingCheckIn) async {
     try {
       parkingCheckIn = await firestore.runTransaction((transaction) async {
         final doc = firestore.collection(parkingHistory).doc(parkingCheckIn.id);
@@ -123,16 +133,37 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
         });
         // ref VehicleTicket
         final vehicleRef = firestore
-            .collection('vehicle')
+            .collection(vehiclesTicket)
             .where('ticketCode', isEqualTo: parkingCheckIn.ticketCode)
             .limit(1);
         final vehicleQuerySnapshot = await vehicleRef.get();
         if (vehicleQuerySnapshot.docs.isNotEmpty) {
           final vehicleDoc = vehicleQuerySnapshot.docs.first;
+          final VehicleTicket vehicleTicket =
+              VehicleTicket.fromDocumentSnapshot(vehicleDoc);
+          final parkingLotId = vehicleTicket.parkingLotId;
+          final vehicleLicensePlate = vehicleTicket.userId != null
+              ? vehicleTicket.vehicleLicensePlate
+              : null;
           transaction.update(vehicleDoc.reference, {
             'isInParking': false,
+            'parkingFloor': null,
+            'parkingLotId': null,
+            'parkingLotName': null,
+            'vehicleLicensePlate': vehicleLicensePlate,
           });
+          if (parkingLotId != null) {
+            final parkingDocRef =
+                firestore.collection(parking).doc(parkingLotId);
+
+            transaction.update(parkingDocRef, {
+              'vehicleLicensePlate': null,
+              'ticketId': null,
+              'ticketCode': null,
+            });
+          }
         }
+
         return parkingCheckIn.copyWith(
           timeOut: DateTime.now(),
           imgOut: parkingCheckIn.imgOut,
@@ -147,7 +178,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
   }
 
   @override
-  Future<List<ParkingCheckIn>> getParkingCheckInInDate(DateTime date) async {
+  Future<List<ParkingHistory>> getParkingCheckInInDate(DateTime date) async {
     try {
       final beginDate = DateTime(date.year, date.month, date.day);
       final endDate = DateTime(date.year, date.month, date.day + 1);
@@ -157,7 +188,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
           .where('timeIn', isLessThan: endDate)
           .get();
       return querySnapshot.docs
-          .map((e) => ParkingCheckIn.fromDocument(e))
+          .map((e) => ParkingHistory.fromDocument(e))
           .toList();
     } catch (e) {
       logger.e(e);
@@ -166,7 +197,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
   }
 
   @override
-  Future<List<ParkingCheckIn>> getParkingVehicleBySearch(String q) async {
+  Future<List<ParkingHistory>> getParkingVehicleBySearch(String q) async {
     try {
       final querySnapshot = await firestore
           .collection(parkingHistory)
@@ -183,7 +214,7 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
           ))
           .get();
       return querySnapshot.docs
-          .map((e) => ParkingCheckIn.fromDocument(e))
+          .map((e) => ParkingHistory.fromDocument(e))
           .toList();
     } catch (e) {
       logger.e(e);
@@ -192,19 +223,19 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
   }
 
   @override
-  Future<List<ParkingCheckIn>> getParkingCheckInByTicketId(String ticketId) {
+  Future<List<ParkingHistory>> getParkingCheckInByTicketId(String ticketId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<ParkingCheckIn>> getParkingInParkingLot() {
+  Future<List<ParkingHistory>> getParkingInParkingLot() {
     try {
       final querySnapshot = firestore
           .collection(parkingHistory)
           .where('timeOut', isNull: true)
           .get();
       return querySnapshot.then((value) =>
-          value.docs.map((e) => ParkingCheckIn.fromDocument(e)).toList());
+          value.docs.map((e) => ParkingHistory.fromDocument(e)).toList());
     } catch (e) {
       logger.e(e);
       rethrow;
@@ -224,6 +255,45 @@ class ParkingRemoteDataSourceImpl implements ParkingRemoteDataSource {
     } catch (e) {
       logger.e(e);
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> inParking(ParkingLot lot, VehicleTicket ticket) async {
+    // update transaction parking lot: status, vehicleLicensePlate, and ticketId
+    // and vehicle: status, parkingFloor, parkingLotId
+    try {
+      final response = await firestore.runTransaction((transaction) async {
+        final lotRef = firestore.collection(parking).doc(lot.id);
+        final lotDoc = await transaction.get(lotRef);
+        if (!lotDoc.exists) {
+          throw Exception('Vị trí đỗ xe không tồn tại');
+        }
+
+        final ticketRef = firestore.collection(vehiclesTicket).doc(ticket.id);
+        final ticketDoc = await transaction.get(ticketRef);
+        if (!ticketDoc.exists) {
+          throw Exception('Không tìm thế thẻ xe');
+        }
+
+        transaction.update(lotRef, {
+          'status': ParkingLotStatus.occupiedKnown.toJson(),
+          'vehicleLicensePlate': ticket.vehicleLicensePlate,
+          'ticketId': ticket.id,
+          'timeIn': FieldValue.serverTimestamp(),
+        });
+
+        transaction.update(ticketRef, {
+          'parkingFloor': lot.floor,
+          'parkingLotId': lot.id,
+          'parkingLotName': lot.name,
+        });
+
+        return lot;
+      });
+    } catch (e) {
+      logger.e(e);
+      throw e;
     }
   }
 }

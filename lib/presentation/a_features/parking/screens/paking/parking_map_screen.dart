@@ -1,6 +1,7 @@
 import 'package:apartment_managage/presentation/a_features/parking/blocs/parking/parking_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/blocs/vehicle/vehicle_list_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/parking/domain/model/parking_lot.dart';
+import 'package:apartment_managage/presentation/a_features/parking/screens/paking/widgets/item_parking_card.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/paking/widgets/parking_slot_widget.dart';
 import 'package:apartment_managage/presentation/a_features/parking/screens/vehicle/widgets/item_vehicle_card.dart';
 import 'package:apartment_managage/presentation/widgets/widgets.dart';
@@ -89,9 +90,9 @@ class _ParkingMapScreenState extends State<ParkingMapScreen> {
                       element.ticketId == null) {
                     mapSlot[element.zone] = mapSlot[element.zone]! + 1;
 
-                    if (map[element.zone]!.contains(element.slot)) {
-                      print('contain ${element.zone} ${element.slot}');
-                    }
+                    // if (map[element.zone]!.contains(element)) {
+                    //   print('contain ${element.zone} ${element.slot}');
+                    // }
                   }
                 } else {
                   map[element.zone] = [element];
@@ -111,6 +112,9 @@ class _ParkingMapScreenState extends State<ParkingMapScreen> {
               );
             }
 
+            // listVehicle in Parking
+            final listVehicle = state.listVehicleInParking;
+            logger.w(listVehicle);
             return Column(
               children: [
                 const SizedBox(height: 10),
@@ -124,7 +128,7 @@ class _ParkingMapScreenState extends State<ParkingMapScreen> {
                   ),
                 ),
                 if (state.lotSelect != null) const SizedBox(height: 10),
-                Text('Đã chọn: ${state.lotSelect?.slot}'),
+                // Text('Đã chọn: ${state.lotSelect?.slot}'),
                 const SizedBox(height: 10),
                 if (state.status == ParkingStatus.loaded) ...[
                   Text(
@@ -218,71 +222,45 @@ class _ParkingMapScreenState extends State<ParkingMapScreen> {
                                   )),
                             ),
                             Expanded(child: Container()),
-                            // Expanded(
-                            //   child: CustomButton(
-                            //     onPressed: () {
-                            //       // context.read<ParkingBloc>().add(ParkingBookLot());
-                            //     },
-                            //     title: 'Xác nhận',
-                            //   ),
-                            // ),
+                            if (state.vehicleSelect != null &&
+                                state.vehicleSelect?.parkingLotId == null &&
+                                state.lotSelect?.isAvailable == true)
+                              CustomCircleButton(
+                                icon: Icons.add_circle_outline_outlined,
+                                iconSize: 30,
+                                onPressed: () {
+                                  context
+                                      .read<ParkingBloc>()
+                                      .add(ParkingInProccess());
+                                },
+                              )
                           ],
                         ),
                       ),
-                      BlocBuilder<ManageVehicleTicketBloc, ManageVehicleState>(
-                        builder: (context, state) {
-                          if (state.status == ManageVehicleStatus.loading ||
-                              state.status == ManageVehicleStatus.initial) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state.status == ManageVehicleStatus.error) {
-                            return const Center(
-                              child: Text('Có lỗi xảy ra'),
-                            );
-                          }
-                          if (state.list.isEmpty) {
-                            return const Center(
-                              child: Text('Không có dữ liệu'),
-                            );
-                          }
-                          return SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: state.list.length,
-                                itemBuilder: (context, index) {
-                                  final item = state.list[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      if (item.parkingLotId != null) {
-                                        final lot = context
-                                            .read<ParkingBloc>()
-                                            .state
-                                            .list
-                                            .firstWhere((element) =>
-                                                element.id == item.ticketId);
-                                        context
-                                            .read<ParkingBloc>()
-                                            .add(ParkingSelectLot(lot));
-                                      } else {
-                                        showSnackBarWarning(context,
-                                            'Không tìm thấy xe trong bãi đỗ');
-                                      }
-                                    },
-                                    child: ItemVehicleCard(item: item),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     ],
                   ),
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: listVehicle.length,
+                      itemBuilder: (context, index) {
+                        final item = listVehicle[index];
+                        return InkWell(
+                          onTap: () => context
+                              .read<ParkingBloc>()
+                              .add(ParkingSelectVehicle(item)),
+                          child: ItemParkingCard(
+                            item: item,
+                            selelect: item.id == state.vehicleSelect?.id,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )
               ],
             );
           },
@@ -338,54 +316,3 @@ class _ParkingMapScreenState extends State<ParkingMapScreen> {
     return Offset(width / 2, height / 2);
   }
 }
-
-
-
-
-
-
-         // if (zoneSelect != null)
-                        //   Wrap(
-                        //     spacing: 10.0,
-                        //     runSpacing: 10.0,
-                        //     children: map[zoneSelect]!.map((slot) {
-                        //       return InkWell(
-                        //         onTap: () {
-                        //           // context
-                        //           //     .read<ParkingBloc>()
-                        //           //     .add(ParkingSelectLot(slot));
-                        //           // setState(() {
-                        //           // });
-                        //           moveCenter(Offset(slot.x, slot.y));
-                        //         },
-                        //         child: Container(
-                        //           width: 50,
-                        //           height: 50,
-                        //           color: slot.status ==
-                        //                       ParkingLotStatus.available ||
-                        //                   slot.ticketId == null
-                        //               ? Colors.green
-                        //               : Colors.red,
-                        //           child: Center(
-                        //             child: Column(
-                        //               crossAxisAlignment:
-                        //                   CrossAxisAlignment.center,
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.center,
-                        //               children: [
-                        //                 Text(
-                        //                   '${slot.name}',
-                        //                   style: const TextStyle(
-                        //                     color: Colors.white,
-                        //                     fontSize: 12,
-                        //                   ),
-                        //                   textAlign: TextAlign.center,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       );
-                        //     }).toList(),
-                        //   ),
-                    

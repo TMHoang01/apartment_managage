@@ -19,12 +19,18 @@ class ItemVehicleCard extends StatelessWidget {
             child: Icon(item.vehicleType == 'car'
                 ? Icons.directions_car
                 : Icons.motorcycle)),
-        title: Text(item.vehicleLicensePlate ?? ""),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(item.vehicleLicensePlate ?? ""),
+            Text(item.ticketCode ?? ""),
+          ],
+        ),
         subtitle: Text(
           item.status?.toName() ?? '',
           style: TextStyle(color: color, fontWeight: FontWeight.bold),
         ),
-        trailing: Icon(Icons.arrow_forward_ios),
+        // trailing: Icon(Icons.arrow_forward_ios),
         // children: [
         //   Container(
         //     width: size.width,

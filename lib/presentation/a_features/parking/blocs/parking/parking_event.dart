@@ -21,3 +21,15 @@ class ParkingSelectLot extends ParkingEvent {
   final ParkingLot lot;
   const ParkingSelectLot(this.lot);
 }
+
+class ParkingSelectVehicle extends ParkingEvent {
+  final VehicleTicket vehicle;
+  const ParkingSelectVehicle(this.vehicle);
+}
+
+class ParkingInProccess extends ParkingEvent {
+  const ParkingInProccess();
+
+  @override
+  List<Object> get props => [];
+}

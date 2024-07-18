@@ -45,6 +45,7 @@ import 'package:apartment_managage/presentation/a_features/parking/domain/reposi
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_detail/post_detail_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/blocs/posts/posts_bloc.dart';
+import 'package:apartment_managage/presentation/a_features/posts/blocs/posts_accept/posts_accept_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/category/category_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/product/blocs/products/product_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/service/blocs/service_booking/service_booking_bloc.dart';
@@ -131,6 +132,7 @@ void _initAdmin() {
 
   //post
   sl.registerFactory<PostsBloc>(() => PostsBloc(sl.call()));
+  sl.registerFactory<PostsAcceptBloc>(() => PostsAcceptBloc(sl.call()));
   sl.registerFactory<PostFormBloc>(
     () => PostFormBloc(postRepository: sl.call(), fileRepository: sl.call()),
   );
@@ -170,7 +172,7 @@ void _initAuth() {
   sl.registerLazySingleton<ParkingLotRepository>(
     () => ParkingLotRepositoryImpl(sl.call()),
   );
-  sl.registerLazySingleton<ParkingCheckinRepository>(
+  sl.registerLazySingleton<ParkingHistoryRepository>(
     () => ParkingCheckinRepositoryImpl(sl.call()),
   );
   sl.registerLazySingleton<VehicleRemoteDataSource>(
@@ -181,7 +183,7 @@ void _initAuth() {
   );
   sl.registerFactory<ManageVehicleTicketBloc>(
       () => ManageVehicleTicketBloc(sl.call()));
-  sl.registerFactory<ParkingBloc>(() => ParkingBloc(sl.call()));
+  sl.registerFactory<ParkingBloc>(() => ParkingBloc(sl.call(), sl.call()));
 
   sl.registerFactory<ParkingCheckInBloc>(
       () => ParkingCheckInBloc(sl.call(), sl.call()));

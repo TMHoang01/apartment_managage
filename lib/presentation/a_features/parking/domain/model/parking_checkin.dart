@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class ParkingCheckIn extends Equatable {
+class ParkingHistory extends Equatable {
   final String? id;
   final String? ticketCode;
   final bool? isMonthlyTicket;
@@ -22,9 +22,18 @@ class ParkingCheckIn extends Equatable {
 
   bool get isOut => timeOut != null;
 
+  String get status {
+    // if (timeIn == null) return "order";
+    if (lotId != null) return "inParkingWithSlot";
+    return 'inParking';
+  }
+
   setPrice() {
-    if (ticketCode == null) price = 0.0;
-    if (isMonthlyTicket == true) price = 0.0;
+    if (ticketCode == null || isMonthlyTicket == true) {
+      price = 0.0;
+      return;
+    }
+
     // gửi trong ngày vào ra để tính giá gửi vào trong khoảng [6,18h] ban ngày 3k, tối 5k, nếu gửi qua đêm thì 10k/ ngày
     if (timeIn != null && timeOut != null) {
       final TimeOfDay hourIn = TimeOfDay.fromDateTime(timeIn!);
@@ -51,7 +60,7 @@ class ParkingCheckIn extends Equatable {
     }
   }
 
-  ParkingCheckIn({
+  ParkingHistory({
     this.id,
     this.ticketCode,
     this.isMonthlyTicket,
@@ -65,8 +74,8 @@ class ParkingCheckIn extends Equatable {
     this.price = 0.0,
   });
 
-  factory ParkingCheckIn.fromJson(Map<String, dynamic> json) {
-    return ParkingCheckIn(
+  factory ParkingHistory.fromJson(Map<String, dynamic> json) {
+    return ParkingHistory(
       id: json['id'],
       ticketCode: json['ticketCode'],
       isMonthlyTicket: json['isMonthlyTicket'],
@@ -81,8 +90,8 @@ class ParkingCheckIn extends Equatable {
     );
   }
 
-  factory ParkingCheckIn.fromDocument(DocumentSnapshot doc) {
-    return ParkingCheckIn.fromJson(doc.data() as Map<String, dynamic>)
+  factory ParkingHistory.fromDocument(DocumentSnapshot doc) {
+    return ParkingHistory.fromJson(doc.data() as Map<String, dynamic>)
         .copyWith(id: doc.id);
   }
 
@@ -102,7 +111,7 @@ class ParkingCheckIn extends Equatable {
     };
   }
 
-  ParkingCheckIn copyWith({
+  ParkingHistory copyWith({
     String? id,
     String? ticketCode,
     bool? isMonthlyTicket,
@@ -115,7 +124,7 @@ class ParkingCheckIn extends Equatable {
     String? lotId,
     num? price,
   }) {
-    return ParkingCheckIn(
+    return ParkingHistory(
       id: id ?? this.id,
       ticketCode: ticketCode ?? this.ticketCode,
       isMonthlyTicket: isMonthlyTicket ?? this.isMonthlyTicket,
@@ -135,6 +144,7 @@ class ParkingCheckIn extends Equatable {
         id,
         ticketCode,
         vehicleLicensePlate,
+        isMonthlyTicket,
         vehicleType,
         imgIn,
         imgOut,

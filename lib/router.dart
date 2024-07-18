@@ -19,6 +19,7 @@ import 'package:apartment_managage/presentation/a_features/parking/screens/vehic
 import 'package:apartment_managage/presentation/a_features/posts/blocs/post_form/post_form_bloc.dart';
 import 'package:apartment_managage/presentation/a_features/posts/screens/post_create_screen.dart';
 import 'package:apartment_managage/presentation/a_features/posts/screens/post_detail_screen.dart';
+import 'package:apartment_managage/presentation/a_features/posts/screens/post_list_accept_screen.dart';
 import 'package:apartment_managage/presentation/a_features/posts/screens/post_list_screen.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/form/product_detail_form.dart';
 import 'package:apartment_managage/presentation/a_features/product/screens/product_detail.dart';
@@ -53,12 +54,13 @@ class AppRouter {
   static const String productDetail = '/admin/product/detail';
   static const String productEdit = '/admin/product/edit';
   static const String productAdd = '/admin/product/add';
+  static const String oderDetail = '/admin/order';
 
   static const String post = '/admin/post';
   static const String postDetail = '/admin/post/detail';
   static const String postEdit = '/admin/post/edit';
   static const String postAdd = '/admin/post/add';
-  static const String oderDetail = '/admin/order';
+  static const String postAccept = '/admin/post/accept';
 
   static const String users = '/admin/user/list';
   static const String usersApprove = '/admin/user/approve/list';
@@ -109,6 +111,7 @@ class AppRouter {
     products: (context) => const ManageProductsScreen(),
     productAdd: (context) => const ProductFormDetail(),
     post: (context) => const PostListScreen(),
+    postAccept: (context) => const PostListAccpetScreen(),
     users: (context) => const UsersScreen(),
     usersApprove: (context) => const UsersApproveScreen(),
     services: (context) => const ServicesScreen(),

@@ -3,8 +3,8 @@ part of 'parking_checkin_bloc.dart';
 enum ParkingCheckInStatus { initial, loading, loaded, error }
 
 class ParkingCheckInState extends Equatable {
-  final List<ParkingCheckIn> list;
-  final ParkingCheckIn? select;
+  final List<ParkingHistory> list;
+  final ParkingHistory? select;
   final VehicleTicket? ticket;
   final String message;
   final ParkingCheckInStatus status;
@@ -12,7 +12,7 @@ class ParkingCheckInState extends Equatable {
   final ParkingCheckInStatus? statusOut;
 
   const ParkingCheckInState({
-    this.list = const <ParkingCheckIn>[],
+    this.list = const <ParkingHistory>[],
     this.select,
     this.ticket,
     this.message = '',
@@ -22,8 +22,8 @@ class ParkingCheckInState extends Equatable {
   });
 
   ParkingCheckInState copyWith({
-    List<ParkingCheckIn>? list,
-    ParkingCheckIn? select,
+    List<ParkingHistory>? list,
+    ParkingHistory? select,
     VehicleTicket? ticket,
     String? message,
     ParkingCheckInStatus? status,

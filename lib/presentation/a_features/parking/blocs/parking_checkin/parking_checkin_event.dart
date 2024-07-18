@@ -10,13 +10,13 @@ sealed class ParkingCheckInEvent extends Equatable {
 class ParkingCheckInStarted extends ParkingCheckInEvent {}
 
 class ParkingCheckInCheckInStarted extends ParkingCheckInEvent {
-  final ParkingCheckIn parkingHistory;
+  final ParkingHistory parkingHistory;
 
   const ParkingCheckInCheckInStarted(this.parkingHistory);
 }
 
 class ParkingCheckInCheckOutStarted extends ParkingCheckInEvent {
-  final ParkingCheckIn parkingHistory;
+  final ParkingHistory parkingHistory;
 
   const ParkingCheckInCheckOutStarted(this.parkingHistory);
 }

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
@@ -55,6 +57,9 @@ class ParkingLot extends Equatable {
     this.ticketCode,
   });
   String get name => '$zone$slot';
+  bool get isAvailable =>
+      status == ParkingLotStatus.available || status == null;
+
   ParkingLot copyWith({
     String? id,
     double? x,

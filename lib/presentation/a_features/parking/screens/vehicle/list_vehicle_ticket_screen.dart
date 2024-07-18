@@ -16,6 +16,10 @@ class _ListVehicleTikectScreenState extends State<ListVehicleTikectScreen> {
   @override
   void initState() {
     super.initState();
+    _initFetch();
+  }
+
+  _initFetch() {
     context.read<ManageVehicleTicketBloc>().add(ManageVehicleTicketStarted());
   }
 
@@ -44,17 +48,22 @@ class _ListVehicleTikectScreenState extends State<ListVehicleTikectScreen> {
               child: Text('Không có dữ liệu'),
             );
           }
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: state.list.length,
-                itemBuilder: (context, index) {
-                  final item = state.list[index];
-                  return ItemVehicleCard(item: item);
-                },
+          return RefreshIndicator(
+            onRefresh: () => Future.delayed(const Duration(seconds: 1), () {
+              _initFetch();
+            }),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: state.list.length,
+                  itemBuilder: (context, index) {
+                    final item = state.list[index];
+                    return ItemVehicleCard(item: item);
+                  },
+                ),
               ),
             ),
           );

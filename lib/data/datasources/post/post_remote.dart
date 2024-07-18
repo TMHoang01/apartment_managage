@@ -17,6 +17,11 @@ abstract class PostRemoteDataSource {
       {int limit = 20, String? query, String? type, DateTime? lastUpdate});
 
   Future<void> joinEvent({required String id, required JoinersModel joiner});
+
+  Future<List<PostModel>> getPendingPosts(
+      {DateTime? lastCreateAt,
+      required int limit,
+      Map<String, String>? filter});
 }
 
 class PostRemoteDataSourceImpl implements PostRemoteDataSource {
@@ -69,6 +74,13 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
           query = query.where(key, isEqualTo: value);
         });
       }
+      // query = query.where(Filter.or(
+      //   Filter('status', isEqualTo: 'active'),
+      //   Filter("status", isNull: true),
+      // ));
+
+      query = query.where('status', isEqualTo: 'active');
+
       query = query.limit(limit);
       final response = await query.get();
 
@@ -107,6 +119,8 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
       if (lastUpdate != null) {
         queryRef = queryRef.startAfter([lastUpdate]);
       }
+      queryRef = queryRef.where('status', isEqualTo: 'active');
+
       queryRef = queryRef.limit(limit);
       final response = await queryRef.get();
       return response.docs.map((e) {
@@ -151,6 +165,44 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
             postRef, {'joinerIds': joinerIds, 'joinersCount': joinersCount});
         transaction.set(joiners, joiner.toJson());
       });
+    } on FirebaseException catch (e) {
+      logger.e(e.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<List<PostModel>> getPendingPosts(
+      {DateTime? lastCreateAt,
+      required int limit,
+      Map<String, String>? filter}) async {
+    try {
+      Query query = colection.orderBy('createdAt', descending: true);
+
+      if (lastCreateAt != null) {
+        query = query.startAfter([lastCreateAt]);
+      }
+      if (filter != null) {
+        filter.forEach((key, value) {
+          query = query.where(key, isEqualTo: value);
+        });
+      }
+      // query = query.limit(limit);
+
+      query = query.where('status', isEqualTo: 'pending');
+      final response = await query.get();
+
+      return response.docs.map((e) {
+        final data = e.data() as Map<String, dynamic>;
+        switch (data['type']) {
+          case 'news':
+            return NewsModel.fromDocumentSnapshot(e);
+          case 'event':
+            return EventModel.fromDocumentSnapshot(e);
+          default:
+            return PostModel.fromDocumentSnapshot(e);
+        }
+      }).toList();
     } on FirebaseException catch (e) {
       logger.e(e.toString());
       throw Exception(e.toString());

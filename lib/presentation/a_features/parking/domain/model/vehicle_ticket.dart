@@ -65,7 +65,8 @@ class VehicleTicket extends Equatable {
     this.updatedAt,
   });
   // bool compare Date
-  get isExpired => DateTime.now().isAfter(expireDate!);
+  get isExpired =>
+      expireDate == null ? true : DateTime.now().isAfter(expireDate!);
 
   String get statusName {
     if (status == TicketStatus.active && isExpired) {

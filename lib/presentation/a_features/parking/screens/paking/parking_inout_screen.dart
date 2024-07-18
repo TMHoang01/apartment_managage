@@ -61,8 +61,16 @@ class _ParkingInOutScreenState extends State<ParkingInOutScreen> {
                           },
                           child: Container(
                             color: isParkingIn ? Colors.white : kPrimaryColor,
-                            child: const Center(
-                              child: Text('Xe vào'),
+                            child: Center(
+                              child: Text(
+                                'Xe vào',
+                                style: TextStyle(
+                                  color: !isParkingIn
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -76,8 +84,15 @@ class _ParkingInOutScreenState extends State<ParkingInOutScreen> {
                           },
                           child: Container(
                             color: isParkingIn ? kPrimaryColor : Colors.white,
-                            child: const Center(
-                              child: Text('Xe ra'),
+                            child: Center(
+                              child: Text(
+                                'Xe ra',
+                                style: TextStyle(
+                                  color:
+                                      isParkingIn ? Colors.white : Colors.black,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
                           ),
                         ),

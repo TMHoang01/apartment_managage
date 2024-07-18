@@ -156,11 +156,11 @@ class _AdminHomePageState extends State<AdminHomePage>
     //   },
     // ),
     ItemHomePage(
-      title: 'Hàng hóa',
-      icon: FontAwesomeIcons.productHunt,
+      title: 'Duyệt tin',
+      icon: FontAwesomeIcons.bookOpenReader,
       color: Colors.green,
       onTap: (BuildContext context) {
-        navService.pushNamed(context, AppRouter.products);
+        navService.pushNamed(context, AppRouter.postAccept);
       },
     ),
     ItemHomePage(
@@ -213,6 +213,7 @@ class _AdminHomePageState extends State<AdminHomePage>
             // List type user
             if (userCurrent?.isAdmin ?? false)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('  Quản lý người dùng',
                       style:
